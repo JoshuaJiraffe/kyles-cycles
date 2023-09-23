@@ -10,7 +10,7 @@ Have you ever wanted to start a company where you fix and sell motorcycles but y
 ### Design:
 
 The first sample screens shows what the landing screen for the website will look like and the second shows the screen that will appear when a user selects a specific motorcyle to look at to see more details.
-![sample pictures] (IMG_4555.jpg)
+![sample pictures](IMG_4555.jpg)
 
 ### Key Features:
 
