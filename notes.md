@@ -1,4 +1,5 @@
 Here's the link to the readme: https://github.com/JoshuaJiraffe/startup-kyles-cycles/blob/main/README.md
+Here's my public IP address: 3.222.97.239
 
 Things I learned from starting my first github repo:
   - Work in the source control bar on VScode in order to commit and push changes
@@ -60,3 +61,92 @@ You can stop your server so you don't have to pay for it when it's not running b
  - Press Associate.
 
 Elastic IP is only free while your server is running. Good to have in case you need to reboot server
+
+## The Internet:
+ - The internet is really just a collection of wires to connect everything
+ - Files travel across the internet in little parts called packets
+
+
+# Week 4
+
+## HTML:
+HTML elements are represented with enclosing tags. Elements can contain text and/or other elements inside of them
+ - Just plain text is valid HTML
+ - <p> tag will have words in default text font and size
+ - index.html is the default page for web browsers to show
+
+ Always include this at beginning of HTML file:
+ <!DOCTYPE html>
+ <html lang="en">
+
+### Attributes:
+ - Attributes describe details of elements
+ - id attribute gives unique id to an element
+ - class attribute gives element a class
+ - Attributes go inside element tags
+ - Attributes use single or double quotes to be defined
+Example:
+  <p id="hello" class="greeting">Hello world</p>
+
+### Hyperlinks:
+ - Uses anchor element and href attribute
+ - <a href="<url>"><whatever you want the link to say></a>
+
+ 
+ ### Common elements
+
+Modern HTML contains over 100 different elements. Here is a short list of HTML elements that you will commonly see.
+
+| element   | meaning                                                                |
+| --------- | ---------------------------------------------------------------------- |
+| `html`    | The page container                                                     |
+| `head`    | Header information                                                     |
+| `title`   | Title of the page                                                      |
+| `meta`    | Metadata for the page such as character set or viewport settings       |
+| `script`  | JavaScript reference. Either a external reference, or inline           |
+| `include` | External content reference                                             |
+| `body`    | The entire content body of the page                                    |
+| `header`  | Header of the main content                                             |
+| `footer`  | Footer of the main content                                             |
+| `nav`     | Navigational inputs                                                    |
+| `main`    | Main content of the page                                               |
+| `section` | A section of the main content                                          |
+| `aside`   | Aside content from the main content                                    |
+| `div`     | A block division of content                                            |
+| `span`    | An inline span of content                                              |
+| `h<1-9>`  | Text heading. From h1, the highest level, down to h9, the lowest level |
+| `p`       | A paragraph of text                                                    |
+| `b`       | Bring attention                                                        |
+| `table`   | Table                                                                  |
+| `tr`      | Table row                                                              |
+| `th`      | Table header                                                           |
+| `td`      | Table data                                                             |
+| `ol,ul`   | Ordered or unordered list                                              |
+| `li`      | List item                                                              |
+| `a`       | Anchor the text to a hyperlink                                         |
+| `img`     | Graphical image reference                                              |
+| `dialog`  | Interactive component such as a confirmation                           |
+| `form`    | A collection of user input                                             |
+| `input`   | User input field                                                       |
+| `audio`   | Audio content                                                          |
+| `video`   | Video content                                                          |
+| `svg`     | Scalable vector graphic content                                        |
+| `iframe`  | Inline frame of another HTML page                                      |
+
+ 
+### Special Characters:
+ Certain characters can only be accessed by using entity syntax, which uses the ampersand. Also used to show emojis:
+
+| Character | Entity      |
+| --------- | ----------- |
+| &amp;     | `&amp;`     |
+| <         | `&lt;`      |
+| >         | `&gt;`      |
+| "         | `&quot;`    |
+| '         | `&apos;`    |
+| &#128512; | `&#128512;` |
+
+
+
+
+
