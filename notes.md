@@ -152,4 +152,81 @@ Modern HTML contains over 100 different elements. Here is a short list of HTML e
  - Inline elements go within blocks and do not disrupt their flow
 
 
+### HTML Input Elements:
+Here are some elements for accepting user input:
 
+| Element    | Meaning                          | Example                                        |
+| ---------- | -------------------------------- | ---------------------------------------------- |
+| `form`     | Input container and submission   | `<form action="form.html" method="post">`      |
+| `fieldset` | Labeled input grouping           | `<fieldset> ... </fieldset>`                   |
+| `input`    | Multiple types of user input     | `<input type="" />`                            |
+| `select`   | Selection dropdown               | `<select><option>1</option></select>`          |
+| `optgroup` | Grouped selection dropdown       | `<optgroup><option>1</option></optgroup>`      |
+| `option`   | Selection option                 | `<option selected>option2</option>`            |
+| `textarea` | Multiline text input             | `<textarea></textarea>`                        |
+| `label`    | Individual input label           | `<label for="range">Range: </label>`           |
+| `output`   | Output of input                  | `<output for="range">0</output>`               |
+| `meter`    | Display value with a known range | `<meter min="0" max="100" value="50"></meter>` |
+
+ - Form element is used a lot as a container. It's not as needed nowadays that we have fancy JavaScript to do things to the inputs
+ - Specify input as required with required attribute to make people put in something before they can submit it
+ - Pattern attribute gives a regex that must be satisfied in order for the input to be accepted. Works on text, search, url, tel, email, and password, input types
+ - You can also use JavaScript for validation. Make sure to tell user if/why their input isn't accepted
+ - In a selection, in the options, you can preselect an option by opening the tag as <option selected>. For others change it in value using checked
+ - Use value attribute to change starting value
+
+Here are some different types for the input:
+
+| Type           | Meaning                           |
+| -------------- | --------------------------------- |
+| text           | Single line textual value         |
+| password       | Obscured password                 |
+| email          | Email address                     |
+| tel            | Telephone number                  |
+| url            | URL address                       |
+| number         | Numerical value                   |
+| checkbox       | Inclusive selection               |
+| radio          | Exclusive selection               |
+| range          | Range limited number              |
+| date           | Year, month, day                  |
+| datetime-local | Date and time                     |
+| month          | Year, month                       |
+| week           | Week of year                      |
+| color          | Color                             |
+| file           | Local file                        |
+| submit         | button to trigger form submission |
+
+
+
+### Media Elements:
+Now we get to use fancy audio and visual things
+
+ - img, audio, and video elements point to a file that contains what you need
+ - svg and canvas have code to render an image that can be animated
+ - You can use relative or absolute paths. As relative as possible is better
+ - Width attributes will define how big on the page your element is. You can make that relative to the page size
+   
+#### img:
+ - img elements should have an alt attribute that describes what the image is and a src attribute with path
+ - 
+#### audio:
+ - audio elements should have a src attribute and a control attribute
+ - controls attribute makes it so there will be visual representation of audio and user can control it
+ - autoplay attribute makes it play immediately
+ - loop attribute makes it automatically repeat
+
+#### video:
+ - video elements should also have src attribute
+ - They also have access to controls, loop, and autoplay attributes
+ - it's possible you need to include a crossorigin="anonymous" attribute just for fun to make it work
+
+#### svg:
+ - This and canvas are images created within the html
+ - Can render graphics inline, que fancy
+
+#### canvas:
+ - Facilitates animation and 2d drawing
+ - Requires JavaScript support to be able to draw on it
+
+
+# Week 5
