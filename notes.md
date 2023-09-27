@@ -146,7 +146,10 @@ Modern HTML contains over 100 different elements. Here is a short list of HTML e
 | '         | `&apos;`    |
 | &#128512; | `&#128512;` |
 
-
+### HTML Structure:
+ - There are block and inline elements
+ - Block elements are distinct blocks/sections in the content flow
+ - Inline elements go within blocks and do not disrupt their flow
 
 
 
