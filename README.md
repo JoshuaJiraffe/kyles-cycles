@@ -50,10 +50,17 @@ For this deliverable I built out the structure of my application using HTML.
  - Motorcycle page that shows more detailed info for a motorcycle
  - Appointment scheduler page where people can fill out a form to schedule a time to check out a motorcycle
  - Appointment schedule success page that pops up when the form has been successfully completed
+
 **Links** - Most of the pages have a menu at the top to connect to the main, about, and contact pages. The main page has motorcycle pics/names that link to the motorcycle page. The motorcycle page has a link to fill out an appoint.
+
 **Text** - There is a sample text description for motorcycle details as well as text on the about page that describes the business
+
 **Placeholder for 3rd Party Service Calls** - The info on the forms will eventually sync up with google calendar and automatically put appointments in and update which times are free
+
 **Images** - Included placeholder images on the main, about, and motorcycle pages. These images show which motorcycles are for sale
+
 **Login** - Input box for username and password for the admin to log in and gain admin priveleges
+
 **Database** - The different motorcycles for sale will be pulled from a database
+
 **WebSocket** - The views section shows where the views of the motorcycle will be displayed
