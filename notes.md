@@ -230,3 +230,171 @@ Now we get to use fancy audio and visual things
 
 
 # Week 5
+
+## CSS
+
+ - CSS allows colors, style, and also responsiveness. Critical
+ - Also allows for the view of the pagre to change based on the device and its sizes
+ - Functionally, CSS is primarily concerned with defining rulesets, or simply rules. A rule is comprised of a selector that selects the elements to apply the rule to, and one or more declarations that represent the property to style with the given property value.
+
+Three ways to include CSS:
+ - Use style attribute directly in the element
+ - Use style attribute in head section of the html to define style rules for the whole document
+ - Use link attribute to an external css file with rules: <link rel="stylesheet" href="styles.css" />
+ - Properties are inherited but lower level ones override
+
+
+### Box Model:
+ - All styles are aplied to a box region of the display. The box has inner boxes of content, padding, border, and margin
+ - You can change the box-sizing CSS property from the default value of content-box to border-box in order to redefine the width and height to also include the padding and the border.
+
+
+### Selectors:
+ - Use body elements for defining font for the entire webpage (can also use * selector, which does everything)
+ - You can use combinators to only identify certain elements that are inside other elements:
+
+| Combinator       | Meaning                    | Example        | Description                                |
+| ---------------- | -------------------------- | -------------- | ------------------------------------------ |
+| Descendant       | A list of descendants      | `body section` | Any section that is a descendant of a body |
+| Child            | A list of direct children  | `section > p`  | Any p that is a direct child of a section  |
+| General sibling  | A list of siblings         | `p ~ div`      | Any p that has a div sibling               |
+| Adjacent sibling | A list of adjacent sibling | `p + div`      | Any p that has an adjacent div sibling     |
+
+
+ - Use a . to combine element names with class selectors, like: p.summary
+ - You must use a . in front of class selectors
+ - To use id selector use a # in front
+ - Pseudo selectors are based on positional relationships, mouse interactions, hyperlink visitation states, and attributes. Useful if you want something to happen when the mouse hovers over a place or other things with user input
+
+
+### Declarations:
+ - Here are some common ones:
+| Property           | Value                              | Example             | Discussion                                                                     |
+| ------------------ | ---------------------------------- | ------------------- | ------------------------------------------------------------------------------ |
+| background-color   | color                              | `red`               | Fill the background color                                                      |
+| border             | color width style                  | `#fad solid medium` | Sets the border using shorthand where any or all of the values may be provided |
+| border-radius      | unit                               | `50%`               | The size of the border radius                                                  |
+| box-shadow         | x-offset y-offset blu-radius color | `2px 2px 2px gray`  | Creates a shadow                                                               |
+| columns            | number                             | `3`                 | Number of textual columns                                                      |
+| column-rule        | color width style                  | `solid thin black`  | Sets the border used between columns using border shorthand                    |
+| color              | color                              | `rgb(128, 0, 0)`    | Sets the text color                                                            |
+| cursor             | type                               | `grab`              | Sets the cursor to display when hovering over the element                      |
+| display            | type                               | `none`              | Defines how to display the element and its children                            |
+| filter             | filter-function                    | `grayscale(30%)`    | Applies a visual filter                                                        |
+| float              | direction                          | `right`             | Places the element to the left or right in the flow                            |
+| flex               |                                    |                     | Flex layout. Used for responsive design                                        |
+| font               | family size style                  | `Arial 1.2em bold`  | Defines the text font using shorthand                                          |
+| grid               |                                    |                     | Grid layout. Used for responsive design                                        |
+| height             | unit                               | `.25em`             | Sets the height of the box                                                     |
+| margin             | unit                               | `5px 5px 0 0`       | Sets the margin spacing                                                        |
+| max-[width/height] | unit                               | `20%`               | Restricts the width or height to no more than the unit                         |
+| min-[width/height] | unit                               | `10vh`              | Restricts the width or height to no less than the unit                         |
+| opacity            | number                             | `.9`                | Sets how opaque the element is                                                 |
+| overflow           | [visible/hidden/scroll/auto]       | `scroll`            | Defines what happens when the content does not fix in its box                  |
+| position           | [static/relative/absolute/sticky]  | `absolute`          | Defines how the element is positioned in the document                          |
+| padding            | unit                               | `1em 2em`           | Sets the padding spacing                                                       |
+| left               | unit                               | `10rem`             | The horizontal value of a positioned element                                   |
+| text-align         | [start/end/center/justify]         | `end`               | Defines how the text is aligned in the element                                 |
+| top                | unit                               | `50px`              | The vertical value of a positioned element                                     |
+| transform          | transform-function                 | `rotate(0.5turn)`   | Applies a transformation to the element                                        |
+| width              | unit                               | `25vmin`            | Sets the width of the box                                                      |
+| z-index            | number                             | `100`               | Controls the positioning of the element on the z axis                          |
+
+ - When defining size you can use absolute measurements with pixels (px) or inches (in) or relative units like percentage of parent unit (50%), percentage of viewport (50vh), or multiplier of m (2rem)
+ - Here's some examples:
+| Unit | Description                                                      |
+| ---- | ---------------------------------------------------------------- |
+| px   | The number of pixels                                             |
+| pt   | The number of points (1/72 of an inch)                           |
+| in   | The number of inches                                             |
+| cm   | The number of centimeters                                        |
+| %    | A percentage of the parent element                               |
+| em   | A multiplier of the width of the letter `m` in the parent's font |
+| rem  | A multiplier of the width of the letter `m` in the root's font   |
+| ex   | A multiplier of the height of the element's font                 |
+| vw   | A percentage of the viewport's width                             |
+| vh   | A percentage of the viewport's height                            |
+| vmin | A percentage of the viewport's smaller dimension                 |
+| vmax | A percentage of the viewport's larger dimension                  |
+
+Color can be defined like this:
+| Method       | Example                   | Description                                                                                                                                                                                                       |
+| ------------ | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| keyword      | `red`                     | A set of predefined colors (e.g. white, cornflowerblue, darkslateblue)                                                                                                                                            |
+| RGB hex      | `#00FFAA22` or `#0FA2`    | Red, green, and blue as a hexadecimal number, with an optional alpha opacity                                                                                                                                      |
+| RGB function | `rgb(128, 255, 128, 0.5)` | Red, green, and blue as a percentage or number between 0 and 255, with an optional alpha opacity percentage                                                                                                       |
+| HSL          | `hsl(180, 30%, 90%, 0.5)` | Hue, saturation, and light, with an optional opacity percentage. Hue is the position on the 365 degree color wheel (red is 0 and 255). Saturation is how gray the color is, and light is how bright the color is. |
+
+
+
+
+### Fonts:
+
+ - font-family is the property to define your fonts. Use an @font-face to define a family you have to import
+ - Here's an example of how to import amazing fonts from Google. They have many free ones: @import url('https://fonts.googleapis.com/css2?family=Rubik Microbe&display=swap');
+
+
+### Animation:
+ - We'll see if I actuallly do any of this
+ - The basics is you use the animation property and define keyframes for how the element looks at different times in animation
+ - In the normal element css declaration you must have animation-name property that will lead to the animation property and animation-duration as well
+ - The header should be @key-frames <nameofanimation>
+ - Use from and to to define beginning and end
+
+
+### Responsive Design:
+ - The display can change based on the screen size or device. Like so:
+
+| Value  | Meaning                                                                                                                      |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| none   | Don't display this element. The element still exists, but the browser will not render it.                                    |
+| block  | Display this element with a width that fills its parent element. A `p` or `div` element has block display by default.        |
+| inline | Display this element with a width that is only as big as its content. A `b` or `span` element has inline display by default. |
+| flex   | Display this element's children in a flexible orientation.                                                                   |
+| grid   | Display this element's children in a grid orientation.    
+
+ - Mobile browsers will scale by default but we don't want that. To get around this we use this tag in the header:
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+ - Float property moves the element to left or right and makes text go around it
+ - @media selector is very important. It detects size and orientation of viewport and we can change css rules to match
+
+#### Grid:
+ - Grid is a display layout that is uweful in building responsive design.
+ - To access it we use display: grid on the container element (that's the parent/heading element)
+ - You can then use grid-gap, grid-auto-rows, grid-template-columns, all kinds of commands to control how the grid elements will resize
+
+#### Flexbox:
+ - Flex is used to partition the application into responsively moving areas that'll change as application size changes
+ - Make sure to define flex-direction to say which way they should all flex in
+ - Define the properties in the children like this:
+  flex: 0 80px;
+ - 0 means it won't grow and 80px is how tall it is. You can define flex values with numbers to determine the fraction of space they'll take up
+
+
+## Debugging CSS:
+ - Use the inspect element on your page to see why things are working how they're working and debug
+ - Use the elements tab in the inspect space
+
+## Frameworks: (our best friend)
+ - Tailwind and Bootstrap are the most popular. Tailwind uses smaller definitions that go specifically with certain elements in the html
+ - Add bootstrap into your html by using the following tag in the head:
+  <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+ - You also may want to use the jss functionality. Include this tag at the END of the body element:
+ <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"
+  ></script>
+ - To include bootstrap in your application use this command in the console to download it:
+ npm install bootstrap@5.2.3
+ - To use bootstrap you then just need to make the classes all line up with the right bootstrap classes
+
+
+ 
+
+
