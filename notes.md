@@ -395,6 +395,128 @@ Color can be defined like this:
  - To use bootstrap you then just need to make the classes all line up with the right bootstrap classes
 
 
- 
+
+
+# Week 6
+
+
+## JavaScript:
+
+ - Javascript is usually executed using an interpreter at RunTime. Interesting
+ - console.log(); puts whatever's inside out to the debugger console
+ - Use single quotes
+ - Line comments use // while block comments use /*
+ - Use % for special things in your console.log output. For instance, putting in css declarations with %c and following up with the rules
+ - console.time('demo time'); and console.timeEnd('demo time') can sandwich a bit of code and it will output how long it took to run
+ - console.count(); counts how many times a piece of code is called
+
+
+### Adding JS to HTML:
+ - You can insert JS by putting it directly in HTML with <script> element or by using src attribute on said element to refer to external file
+
+
+### Type:
+
+Here are some of the primitive types in JS:
+| Type        | Meaning                                                    |
+| ----------- | ---------------------------------------------------------- |
+| `Null`      | The type of a variable that has not been assigned a value. |
+| `Undefined` | The type of a variable that has not been defined.          |
+| `Boolean`   | true or false.                                             |
+| `Number`    | A 64 bit signed number.                                    |
+| `BigInt`    | A number of arbitrary magnitude.                           |
+| `String`    | A textual sequence of characters.                          |
+| `Symbol`    | A unique value.                                            |
+
+Here are some common objects:
+| Type       | Use                                                                                    | Example                  |
+| ---------- | -------------------------------------------------------------------------------------- | ------------------------ |
+| `Object`   | A collection of properties represented by name value pairs. Values can be of any type. | `{a:3, b:'fish'}`        |
+| `Function` | An object that has the ability to be called.                                           | `function a() {}`        |
+| `Date`     | Calendar dates and times.                                                              | `new Date('1995-12-17')` |
+| `Array`    | An ordered sequence of any type.                                                       | `[3, 'fish']`            |
+| `Map`      | A collection of key value pairs that support efficient lookups.                        | `new Map()`              |
+| `JSON`     | A lightweight data-interchange format used to share information across programs.       | `{"a":3, "b":"fish"}`    |
+
+
+ - Declare variables in JS using let or const. Use let if you're going to be changing that variable in the future
+ - Strict equality is checked with ===
+ - Strict inequality is checked with !==
+ - String concatenation is done with +
+ - Default when you do silly things with two different data types is to concatenate strings
+ - Ternary operator can be used to make an abbreviated if else. Like so:
+       -   a === 1 ? console.log(1) : console.log('not 1');
+       - <conditional> ? <if_true> : <if_false>
+ - JavaScript supports many common programming language looping constructs. This includes `for`, `for in`, `for of`, `while`, `do while`, and `switch`
+ - `do while` executes at least once cause it checks conditionality at the end. That's nice sometimes
+ - `for in` iterates over an object's property names or array index
+ - `for of` iterates over an object's values
+ - break; and continue; are also allowed
+
+
+
+### String:
+
+ - Defining strings with '' or "" is equivalent. Defining with `` means it could be a string literal with js inside of it to evaluate
+ - To put the code block into a string literal use ${} with the js you want to evaluate inside the braces
+ - Theoretically we could internationalize thing. Let's see if we ever do that
+
+Here are some useful string functions:
+| Function      | Meaning                                                      |
+| ------------- | ------------------------------------------------------------ |
+| length        | The number of characters in the string                       |
+| indexOf()     | The starting index of a given substring                      |
+| split()       | Split the string into an array on the given delimiter string |
+| startsWith()  | True if the string has a given prefix                        |
+| endsWith()    | True if the string has a given suffix                        |
+| toLowerCase() | Converts all characters to lowercase                         |
+
+
+
+
+### Functions:
+oof
+
+ - Functions can be treated like any variable. They can be given names, passed as parameters, serve as return values, etc.
+ - You do not assign types to the parameters
+ - If parameter is not provided when a function is called, the value will be set to undefined
+ - You can set default values for parameters
+ - You can also make an anonymous function and assign it to a variable
+ - Functions can be declared inside other functions. This can be done to modularize code without exposing private details
+
+
+
+### Arrow Function:
+
+ - Instead of using function declaration we can use an arrow, like so:
+   () => {<function_declaration>}; (curly braces can be optionally included
+   
+ - You don't have to include return keyword if you don't put curly braces and the function only has one expression:
+   () => 3; (this will return 3)
+   
+ - Closure lets us access variables from functions that are parent when they should be out of scope
+ - Closure basically remembers values of the function when it's created, instead of when it's executed
+
+
+### Array:
+
+Here are some fun static functions of JavaScript arrrays:
+| Function | Meaning                                                   | Example                       |
+| -------- | --------------------------------------------------------- | ----------------------------- |
+| push     | Add an item to the end of the array                       | `a.push(4)`                   |
+| pop      | Remove an item from the end of the array                  | `x = a.pop()`                 |
+| slice    | Return a sub-array                                        | `a.slice(1,-1)`               |
+| sort     | Run a function to sort an array in place                  | `a.sort((a,b) => b-a)`        |
+| values   | Creates an iterator for use with a `for of` loop          | `for (i of a.values()) {...}` |
+| find     | Find the first item satisfied by a test function          | `a.find(i => i < 2)`          |
+| forEach  | Run a function on each array item                         | `a.forEach(console.log)`      |
+| reduce   | Run a function to reduce each array item to a single item | `a.reduce((a, c) => a + c)`   |
+| map      | Run a function to map an array to a new array             | `a.map(i => i+i)`             |
+| filter   | Run a function to remove items                            | `a.filter(i => i%2)`          |
+| every    | Run a function to test if all items match                 | `a.every(i => i < 3)`         |
+| some     | Run a function to test if any items match                 | `a.some(i => 1 < 1)`          |
+
+
+
 
 
