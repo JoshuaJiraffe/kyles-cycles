@@ -518,5 +518,26 @@ Here are some fun static functions of JavaScript arrrays:
 
 
 
+### JSON:
+
+ - JSON stands for JavaScript Object Notation
+ - It's a data format that makes sharing and storing data super easy, barely an inconvenience. Also compatible with JS which is great for web stuff
+
+
+A JSON document contains one of the following data types, most commonly an object:
+
+| Type    | Example                 |
+| ------- | ----------------------- |
+| string  | "crockford"             |
+| number  | 42                      |
+| boolean | true                    |
+| array   | [null,42,"crockford"]   |
+| object  | {"a":1,"b":"crockford"} |
+| null    | null                    |
+
+ - Objects have key-value pairs, where the key is always a string
+ - Strings are always double quotes
+ - Convert to and from Javascript with JSON.parse and JSON.stringify functions
+ - 
 
 
