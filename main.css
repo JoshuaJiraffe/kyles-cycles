@@ -1,0 +1,104 @@
+/* Reset some default styles */
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, table, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+/* Reset styles (same as before) */
+
+body {
+    font-family: Georgia, serif; /* Use Georgia font */
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+header {
+    flex: 0;
+}
+main {
+    flex: 1;
+}
+footer{
+    flex: 0;
+}
+
+.header {
+    background: linear-gradient(to bottom, #660066, #4b004b); /* Purple gradient */
+    color: #ffffff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.logo {
+    font-size: 36px;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); /* Text shadow for visibility */
+    margin-right: 10px;
+}
+
+nav.menu {
+    background-color: #660066;
+    color: #ffffff;
+    padding: 10px;
+    text-align: center;
+    margin-right: 100px;
+}
+
+nav.menu a {
+    color: #ffffff;
+    text-decoration: none;
+    margin: 0 20px;
+}
+/* Customize Bootstrap Navbar styles */
+.navbar {
+    background: linear-gradient(to bottom, #660066, #4b004b); /* Purple gradient */
+    border: none; /* Remove border */
+}
+
+/* Customize Bootstrap Navbar toggle button styles */
+.navbar-toggler-icon {
+    background-color: #ffffff;
+}
+
+/* Customize Bootstrap Navbar link styles */
+.navbar-nav .nav-item .nav-link {
+    color: #7d7d7d; /* Set menu text color to light gray */
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+/* Style the active menu link */
+.navbar-nav .nav-item .nav-link.active {
+    color: #ffffff; /* Set active menu text color to white */
+}
+
+
+
+
+.main-content {
+    padding: 20px;
+}
+
+.motorcycle-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.motorcycle-list td {
+    background-color: #ffffff;
+    margin: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.footer {
+    background: linear-gradient(to bottom, #4b004b, #660066); /* Purple gradient */
+    color: #ffffff;
+    text-align: center;
+    padding: 10px 0;
+}
+
