@@ -5,6 +5,20 @@
 
 #glance {
     margin: 10px 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+.glance-info {
+    flex: 3;
+}
+.schedule-button {
+    flex: 2;
+}
+@media (max-width: 768px) {
+    #glance {
+        flex-direction: column;
+    }
 }
 .glance-item{
     margin: 0.5em 0;

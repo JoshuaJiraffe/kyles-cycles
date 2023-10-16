@@ -83,8 +83,62 @@ nav.menu a {
 .main-content {
     padding: 20px;
 }
-
 .motorcycle-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.motorcycle-card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.motorcycle-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.motorcycle-card h4 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.motorcycle-card p.price {
+    color: #0c6ac9;
+    font-weight: bold;
+}
+/* Add this CSS to your stylesheets */
+a {
+    text-decoration: none; /* Remove underline */
+    color: #333; /* Set the desired text color */
+}
+
+/* Style links on hover if needed */
+a:hover {
+    color: #555; /* Change color on hover */
+}
+
+
+@media (max-width: 768px) {
+    .motorcycle-list {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .motorcycle-list {
+        grid-template-columns: 1fr;
+    }
+}
+/* .motorcycle-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -100,8 +154,8 @@ nav.menu a {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-}
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1); */
+/* } */
 
 /* .main-content .motorcycle-list td {
     background-color: #ffffff;
