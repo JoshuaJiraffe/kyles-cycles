@@ -13,6 +13,7 @@
             crossorigin="anonymous"
         />
         <link rel="stylesheet" href="main.css">
+        <link rel="stylesheet" href="motorcycle.css">
 
     </head>
     <body class="">
@@ -40,42 +41,75 @@
                 </nav>
         </header>
         <main class="main-content">
-            <h2>2009 Kawasaki Vulcan 500</h2>
-            <div class="motorcycle-images-scroller">
-                <div class="motorcycle-images">
-                    <img src="Vulcanjpeg.jpeg" alt="Image 1" width="600px">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="motorcycleCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="Vulcanjpeg.jpeg" class="d-block w-100" alt="Image 1">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="Ducati.jpg" class="d-block w-100" alt="Image 2">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="Vulcanjpeg.jpeg" class="d-block w-100" alt="Image 3">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="Ducati.jpg" class="d-block w-100" alt="Image 4">
+                                </div>
+                                <!-- Add more carousel items with additional images -->
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#motorcycleCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#motorcycleCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                        
+                        <!-- <div class="motorcycle-images-scroller">
+                            <div class="motorcycle-images">
+                                <img src="Vulcanjpeg.jpeg" alt="Image 1" class="img-fluid">
+                            </div>
+                            <button class="prev">&lt; Previous</button>
+                            <button class="next">Next &gt;</button>
+                        </div> -->
+                    </div>
+                    <div class="col-md-6">
+                        <h2 class="motorcycle-title">2009 Kawasaki Vulcan 500</h2>
+                            <h3 style="margin: 0 10px">At a Glance:</h3>
+                            <div id="glance">
+                                <aside>
+                                    <div class="text-end">
+                                        <a href="schedule.html" class="btn custom-btn-purple btn-lg">Schedule a time to come look at this bike</a>
+                                    </div>
+                                    </aside>
+                                <p class="glance-item"><b>Year:</b> 2009</p>
+                                <p class="glance-item"><b>Make:</b> Kawasaki</p>
+                                <p class="glance-item"><b>Model:</b> Vulcan 500</p>
+                                <p class="glance-item"><b>Type:</b> Cruiser</p>
+                                <p class="glance-item"><b>Price:</b> $2,390</p>
+                                <p class="glance-item"><b>Condition:</b> Good</p>
+                                <p class="glance-item"><b>Mileage:</b> 30,000 miles</p>
+                                <p class="glance-item"><b>Engine:</b> Inline twin</p>
+                                <p>
+                                    <b>Recent Work Done:</b>
+                                <ul class="work">
+                                    <li>New chain installed</li>
+                                    <li>Seat reupholstered</li>
+                                    <li>Carburetors cleaned and synced</li>
+                                </ul>
+                                </p>
+                             </div>
                 </div>
-                <button class="prev">&lt; Previous</button>
-                <button class="next">Next &gt;</button>
-            <div/>
-            <hr/>
-            <div>
-                <h3>At a Glance:</h3>
-                <p><b>Year:</b> 2009</p>
-                <p><b>Make:</b> Kawasaki</p>
-                <p><b>Model:</b> Vulcan 500</p>
-                <p><b>Type:</b> Cruiser</p>
-                <p><b>Price:</b> $2,390</p>
-                <p><b>Condition:</b> Good</p>
-                <p><b>Mileage:</b> 30,000 miles</p>
-                <p><b>Engine:</b> Inline twin</p>
-                <p>
-                    <b>Recent Work Done:</b>
-                <ul>
-                    <li>New chain installed</li>
-                    <li>Seat reupholstered</li>
-                    <li>Carburetors cleaned and synced</li>
-                </ul>
-                </p>
-
-            </div>
             <br/>
+
             <div>
-                <a href="schedule.html">Schedule a time to come look at this bike</a>
-            </div>
-            <hr/>
-            <div>
-                <h3>Description:</h3>
+                <h3 style="margin-top:15px">Description:</h3>
+                <hr/>
                 <p>
                     Selling my beautiful red 2009 Kawasaki Vulcan 500. She's an absolute blast to ride and super 
                     zippy. Starts easy and runs amazing :). I've had quite a few Vulcan 500s and I can't stop 
@@ -97,5 +131,7 @@
         <footer class="footer">
             <h12> Something doesn't look right? Shoot us an email at kyles.cycles.help@gmail.com</h12>
         </footer>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-g5kCKL8PDk/3IIVL0fQh7m6R2h/wnbCk6BZdMbT7Ck2P8K/ZJp0daF+gFC6b5iq" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js" integrity="sha384-+4rOjELtFZlXs0WHAStL0xvl6pZlUB/zDuhJi2gGDR8fOzBbPh9c8hdn8F0P5KG7" crossorigin="anonymous"></script>        
     </body>
 </html>

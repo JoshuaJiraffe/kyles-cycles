@@ -1,0 +1,28 @@
+.motorcycle-title {
+    padding-bottom: 15px; /* Add padding to the bottom */
+    font-weight: bold;
+}
+
+#glance {
+    margin: 10px 30px;
+}
+.glance-item{
+    margin: 0.5em 0;
+}
+
+.work {
+    margin: 0 30px;
+}
+aside {
+    float: right;
+}
+.custom-btn-purple {
+    background-color: #0c6ac9; 
+    border: none;
+    color: #000000 
+}
+
+.custom-btn-purple:hover {
+    background-color: #085591; /* Specify the desired background color on hover */
+    color: #000000
+}
