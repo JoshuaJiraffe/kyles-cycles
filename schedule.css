@@ -1,0 +1,60 @@
+.appointment-title {
+    text-align: center;
+    margin: 20px;
+}
+
+.custom-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.custom-form .form-group {
+    margin-bottom: 20px;
+}
+
+.custom-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.custom-form input[type="text"],
+.custom-form input[type="email"],
+.custom-form input[type="date"],
+.custom-form input[type="time"],
+.custom-form input[type="checkbox"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.custom-form input[type="submit"] {
+    background-color: #6c5ce7;
+    color: #fff;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.custom-form input[type="submit"]:hover {
+    background-color: #4a36a8; /* Darker shade for hover effect */
+}
+
+/* Custom styles for checkboxes */
+.custom-form input[type="checkbox"] {
+    width: auto; /* Adjust width as needed */
+    margin-right: 10px;
+}
+
+/* Additional styles for radio buttons if needed */
+.custom-form input[type="radio"] {
+    width: auto; /* Adjust width as needed */
+    margin-right: 10px;
+}

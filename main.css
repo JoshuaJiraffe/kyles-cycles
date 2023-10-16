@@ -122,6 +122,17 @@ nav.menu a {
     padding: 15px 0;
 }
 
+.review {
+    font-style: italic;
+    color: #666;
+}
+.reviewer {
+    font-weight: bold;
+}
+
+#company-description {
+    margin: 20px 10px;
+}
 
 @media (orientation: portrait) {
     #admin {

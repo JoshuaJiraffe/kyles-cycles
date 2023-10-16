@@ -13,6 +13,7 @@
             crossorigin="anonymous"
         />
         <link rel="stylesheet" href="main.css">
+        <link rel="stylesheet" href="schedule.css">
     </head>
     <body class="">
         <header class="header">
@@ -39,7 +40,7 @@
                 </nav>
         </header>
         <main class="main-content">
-            <h2>Appointment for 2009 Kawasaki Vulcan 500</h2>
+            <h2 class="appointment-title">Appointment for 2009 Kawasaki Vulcan 500</h2>
             <form action="formcomplete.html" method="get" class="custom-form">
                 <div class="form-group">
                     <label for="date">Select a Date:</label>
@@ -47,7 +48,7 @@
                 </div>
                 <div class="form-group">
                     <label for="time">Select a Time:</label>
-                    <input type="time" id="time" name="appointment_time" required>
+                    <input type="time" id="time" name="appointment_time" step="900" required>
                 </div>
                 <div class="form-group">
                     <label for="name">Your Name:</label>
@@ -70,28 +71,28 @@
                     <p>Select which motorcycles you are interested in looking at:</p>
                     <label for="vulcan500">
                         <input type="checkbox" id="vulcan500" name="motorcycle" value="2009 Kawasaki Vulcan 500" checked> 2009 Kawasaki Vulcan 500
-                    </label><br>
+                    </label>
                     <label for="boulevardS40">
                         <input type="checkbox" id="boulevardS40" name="motorcycle" value="2007 Suzuki Boulevard S40"> 2007 Suzuki Boulevard S40
-                    </label><br>
+                    </label>
                     <label for="boulevard800">
                         <input type="checkbox" id="boulevard800" name="motorcycle" value="2007 Suzuki Boulevard 800"> 2007 Suzuki Boulevard 800
-                    </label><br>
+                    </label>
                     <label for="vtx1300">
                         <input type="checkbox" id="vtx1300" name="motorcycle" value="2004 Honda VTX 1300"> 2004 Honda VTX 1300
-                    </label><br>
+                    </label>
                     <label for="klr650">
                         <input type="checkbox" id="klr650" name="motorcycle" value="1998 Kawasaki KLR 650"> 1998 Kawasaki KLR 650
-                    </label><br>
+                    </label>
                     <label for="concours1000">
                         <input type="checkbox" id="concours1000" name="motorcycle" value="Kawasaki Concours 1000"> Kawasaki Concours 1000
-                    </label><br>
+                    </label>
                     <label for="multistrada1200">
                         <input type="checkbox" id="multistrada1200" name="motorcycle" value="2010 Ducati Multistrada 1200S"> 2010 Ducati Multistrada 1200S
-                    </label><br>
+                    </label>
                     <label for="vstar250">
                         <input type="checkbox" id="vstar250" name="motorcycle" value="2018 Yamaha Vstar 250"> 2018 Yamaha Vstar 250
-                    </label><br>
+                    </label>
                 <br/>
                 <div class="form-group">
                     <label for="terms">
