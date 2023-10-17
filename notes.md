@@ -538,6 +538,80 @@ A JSON document contains one of the following data types, most commonly an objec
  - Objects have key-value pairs, where the key is always a string
  - Strings are always double quotes
  - Convert to and from Javascript with JSON.parse and JSON.stringify functions
- - 
+
+
+
+# Week 7:
+
+## UX:
+ - Always start off by thinking of user and how they interact, not on how cool your technology is
+ - Think of User Experience as a story. We want to get them to applaud
+ - The homepage should be simple. The fewer things there are for the user to process, the better they can engage with the page
+ - Make the homepage something that immediately directs a user to focus on a single purpose
+ - You want to be consistent enough with the general web that it's not hard for users to use your application, but also a little unique and fun
+ - First step in building an application should be designing an application map of all the views and navigtion the users will deal with
+ - If your application map starts looking like a governmental bureaucracy then you probably want to reconsider the interrelation of functionality
+ - A breadcrumb control lists the path the user took
+ - If you want international design with many languages, you need to consider that in the design from the beginning
+ - Animation should be done in moderation
+
+### Colors:
+ - In making a color scheme, we should pick a primary, secondary, and focus color
+ - Use Paletton or Adobe to help select colors
+ - Stick with color scheme even with font color and images that are included
+
+### Typography:
+ - Four different groups of fonts:
+     - Serif
+     - Sans Serif
+     - Monospace (all letters same size)
+     - Handwriting
+  
+ - Restrict number of fonts you have to three or fewer
+ - Sans serif is for buttons, navigation links, and body text
+ - Serif is for paragraph headings
+ - Monospace is for coding examples or text needing alignment
+
+### Iconography and Text:
+ - Use common, already established icons:
+ - There are lots of standard icon packages that you can choose from. This includes packages such as [Font Awesome](https://fontawesome.com/), [Bootstrap Icons](https://icons.getbootstrap.com/), [Material Icons](http://google.github.io/material-design-icons/), [Flat Color Icons](https://github.com/icons8/flat-color-icons), and [Ant Design Icons](https://github.com/ant-design/ant-design-icons)
+
+There are 5 different predetmined categories of text with predefined font size suggestions:
+| Purpose        | Size     |
+| -------------- | -------- |
+| Page title     | 96 px    |
+| Titles         | 48-20 px |
+| Text           | 16 px    |
+| Secondary text | 14 px    |
+| Input          | 16 px    |
+
+ - You can set a max width for paragraphs. 60-80 characters is best. 35em is a good guideline
+
+### Whitespace:
+ - Whitespace will control where a user looks. USE IT
+ - Don't use images ase space fillers
+
+### Decision Fatigue:
+ - Time to make a decision increases logarithmically as number of choices increase
+ - Limit the number of choices the user has to make. Especially the ones presented at the same time
+
+### Performance:
+ - Speed of application reaction to users greatly impacts how much users use the application. If it takes 5 seconds, 90% of users leave
+ - The initial load can take a bit. Use a loading animation to simulate progress and entertain users
+ - Make sure you have a bckup for your website to run even if it can't access third party things or some functionality is down
+
+### Legal:
+ - There are many laws and acts that could regulate your website. Some of that culd deal with making the site accessible for all those with disabilities or managing records and data confidentially
+
+### Walls:
+#### Payment:
+ - Make sure they see the value of the application and can use it significantly before they have to pay
+ - Entering payment information is best if done using associated credential like Google Wallet
+#### Failure:
+ - Eventually the application will fail. Make sure to present a message to tel the user what happened and offer a possible solution. Don't just break
+
+
+
+
 
 
