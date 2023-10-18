@@ -613,5 +613,93 @@ There are 5 different predetmined categories of text with predefined font size s
 
 
 
+## More JS
+
+### RegEx:
+ - You can create a regex using objreg = new RegExp(asdf); or using literalRegex = asdf;
+ - The `string` class has several functions that accept regular expressions. This includes `match`, `replace`, `search`, and `split`. For a quick test to see if there is a match you can use the regular expression object's `test` function.
+
+
+### Rest and Spread:
+ - You can use the rest parameter when you don't know how many parameters there will be. For example in defining a function. Precede the last parameter of a function to make it a rest parameter. Will turn all the rest of the things passed into an array
+ - Spread is also called by ... but not as function parameters. It will take an iterable and separate it out into its individual elements
+
+
+### Exceptions:
+ - To catch an exception we use try catch syntax. You write try with what you want to do, then a catch block with what the system should do if it it throws an exception
+ - You can add a finally block afterwards that will run after the catch block no matter what
+ - You can use 'throw new Error();' syntax to make the system throw an exception. It'll execute the codee in the parentheses
+ - Restrict exceptions to only really meaningful and significant exceptions
+ - Fallbacks - basically when you put an alternate implementation in the catch block so your code always returns and does something, it doesn't just stop
+
+
+### Destructuring:
+ - This is not destructing!!
+ - Process of pulling items out of a larger item, like an array or object
+ - Process looks like this:
+    ```js
+    const a = [1, 2, 4, 5];
+    
+    // destructure the first two items from a, into the new variables b and c
+    const [b, c] = a;
+    
+    console.log(b, c);
+    // OUTPUT: 1, 2
+    ```
+ - destructured part goes on the left side of the equation
+ - You can use rest syntax to combine the trailing end of items from the object. For instance:
+    ```js
+    const [b, c, ...others] = a;
+    
+    console.log(b, c, others);
+    // OUTPUT: 1, 2, [4,5]
+    ```
+ - With objects you specify properties that you want to pull from the object. That's because every object is like a map. It has a collection of properties and values (or functions) associated with them
+ - You can map the names of these object properties to new names:
+ - You can also provide default values
+
+   ```js
+    const o = { a: 1, b: 'animals', c: ['fish', 'cats'] };
+    
+    const { a: count, b: type } = o;
+    
+    console.log(count, type);
+    // OUTPUT 1, animals
+    ```
+
+
+### Objects and Classes:
+ - A JS object represents a collection of name-value pairs. We call those pairs properties
+ - Property name is either a string or a symbol, but the value can be whatever the heck you want it to be. Function, object, a tomato
+ - You must define a constructor for the object so that you can make a new one
+ - You can declare new properties directly from your file
+ - You can access properties using obj.prop() or obj[prop]. Console.log() will also output all the properties
+ - Javascript also has an object object. That's fun
+
+#### Fun things:
+ - You can declare a variable with object-literal syntax. That means you haven't defined that object class in another part of the code:
+    ```js
+    const obj = {
+      a: 3,
+      b: 'fish',
+    };
+    ```
+
+Here are some static functions all objects have:
+| Function | Meaning                             |
+| -------- | ----------------------------------- |
+| entries  | Returns an array of key value pairs |
+| keys     | Returns an array of keys            |
+| values   | Returns an array of values          |
+
+ - A function that returns an object is called a constructor
+ - Use the this pointer in the constructor to refer to the object
+ - You can define a class for an object or you can just define the objects in one-off situations. Depends if you're gonna use it multiple times or not
+ - Make class properties and functions private by prefixing them with a #. Like so: #name || this.#name = name
+ - Use the extend keyword when making a class to use inheritance. Super function will pass to parent class. class Employee extends Person{}
+
+ - 
+
+
 
 
