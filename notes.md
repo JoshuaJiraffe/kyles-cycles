@@ -675,6 +675,9 @@ There are 5 different predetmined categories of text with predefined font size s
  - You can declare new properties directly from your file
  - You can access properties using obj.prop() or obj[prop]. Console.log() will also output all the properties
  - Javascript also has an object object. That's fun
+ - Use get andset for functions that will be getter and setter functions:
+    get weather() {return this._weather;}
+    set weather(weather) {this._weather = weather;}
 
 #### Fun things:
  - You can declare a variable with object-literal syntax. That means you haven't defined that object class in another part of the code:
@@ -698,8 +701,73 @@ Here are some static functions all objects have:
  - Make class properties and functions private by prefixing them with a #. Like so: #name || this.#name = name
  - Use the extend keyword when making a class to use inheritance. Super function will pass to parent class. class Employee extends Person{}
 
- - 
+
+### Scope:
+ - Scope is the variables that are visible in the curent context of execution. There are four types:
+      Global - visible to all code
+      Module - visible to all code running in a module
+      Function - visible within a function
+      Block - visible within a block of code delimited by {}
+
+ - Using var to define a variable ignores block scope. That's why we don't use it
+ - this keyword is automaticaly instantiated and points to an object that contains the context within the scope of the currently executing line of code:
+
+1. **Global** - When this is referenced outside a function or object it refers to the globalThis object. The globalThis object represents the context for runtime environment. For example, when running in a browser, globalThis refers to the browser's window object.
+2. **Function** - When this is referenced in a function it refers to the object that owns the function. That is either an object you defined or globalThis if the function is defined outside of an object. Note that when running is JavaScript strict mode, a global function's this variable is undefined instead of globalThis.
+3. **Object** - When this is referenced in a object it refers to the object.
+
+ - A function inside a class that uses this will refer to that object in that class
 
 
+### Closure:
+ - A closure is a function and its surounding state
+ - Whatever variables are accessible at the point when a function is created are available in that function
+ - Arrow functions inherit pointer of their creation context. Their this will be global if their in global frame
 
 
+### Javascript Modules:
+ - Modules allow partitioning and sharing of code
+ - Node.js lets us import packages
+ - In order to differentiate between the two implementations, Node.js modules are called CommonJS modules, and JavaScript modules are called ES modules. For this discussion, we will focus only on ES modules.
+ - You must export objects from one file and them import them into another file to use them:
+
+**alert.js**
+
+```js
+export function alertDisplay(msg) {
+  alert(msg);
+}
+```
+
+You can import the module's exported function into another module using the `import` keyword.
+
+**main.js**
+
+```js
+import { alertDisplay } from './alert.js';
+
+alertDisplay('called from main.js');
+```
+
+ - When using ES modules in the browser, modules can only be called from other modules. You cannot access JavaScript contained in a module from the global scope that your non-module JavaScript is executing in.
+ - Use <script type="module> to specify that it's an ES module
+ - If we want to use a module in the global scope that our HTML or other non-module JavaScript is executing in, then we must leak it into the global scope by either attaching an event handler, or explicitly adding a function, to the global window object.
+
+```html
+<html>
+  <body>
+    <script type="module">
+      import { alertDisplay } from './alert.js';
+      window.btnClick = alertDisplay;
+
+      document.body.addEventListener('keypress', function (event) {
+        alertDisplay('Key pressed');
+      });
+    </script>
+    <button onclick="btnClick('button clicked')">Press me</button>
+  </body>
+</html>
+```
+
+
+ - We will use a web framework bundler to generate web application distribution code
