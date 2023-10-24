@@ -771,3 +771,175 @@ alertDisplay('called from main.js');
 
 
  - We will use a web framework bundler to generate web application distribution code
+
+
+# Week 8:
+
+## Document Object Model:
+ - Object representation of all our wonderful HTML elements
+ - Global variable name 'document' points to root element of the DOM
+ - DOM Element Interface is implemented by all HTML elements. It allows for manipulating attributes
+ - You can provide a CSS selector to the querySelectorAll function in order to select elements from the document. The textContent property contains all of the element's text. You can even access a textual representation of an element's HTML content with the innerHTML property.
+
+```js
+const listElements = document.querySelectorAll('p');
+for (const el of listElements) {
+  console.log(el.textContent);
+}
+```
+
+
+### Modifying the DOM:
+ - Finally, what JS is all about
+ - DOM naturally supports inserting, modifying, and deletion of elements
+ - The querySelector() method returns the first child element that matches a specified CSS selector(s) of an element
+ - To return all the matches, use the querySelectorAll() method instead
+
+#### Inserting elements:
+You append onto an already existing parent element
+```js
+function insertChild(parentSelector, text) {
+  const newChild = document.createElement('div');
+  newChild.textContent = text;
+
+  const parentElement = document.querySelector(parentSelector);
+  parentElement.appendChild(newChild);
+}
+
+insertChild('#courses', 'new course');
+```
+
+#### Deleting elements:
+Use the removeChild function on the parent
+```js
+function deleteElement(elementSelector) {
+  const el = document.querySelector(elementSelector);
+  el.parentElement.removeChild(el);
+}
+
+deleteElement('#courses div');
+```
+
+#### Injecting HTML:
+ - Use the el.innerHTML = 'htmlhere' function to replace all the html for a given element
+ - Directly injecting HTML is a common attack method for hackers. EEK
+ - If you are injecting HTML, make sure that it cannot be manipulated by a user. Common injection paths include HTML input controls, URL parameters, and HTTP headers. Either sanitize any HTML that contains variables, or simply use DOM manipulation functions instead of using innerHTML.
+ - I need to learn what DOM Manupilation Functions there are
+ - HTML elements have the ability to call a function when an event occurs on said element. Those are 'Event Listeners'
+
+Example:
+```js
+const submitDataEl = document.querySelector('#submitData');
+submitDataEl.addEventListener('click', function (event) {
+  console.log(event.type);
+});
+```
+Commonly listened to events:
+| Event Category | Description           |
+| -------------- | --------------------- |
+| Clipboard      | Cut, copied, pasted   |
+| Focus          | An element gets focus |
+| Keyboard       | Keys are pressed      |
+| Mouse          | Click events          |
+| Text selection | When text is selected |
+
+Or you can add event listeners in the HTML:
+```html
+<button onclick='alert("clicked")'>click me</button>
+```
+
+
+## Local Storage:
+ - We can use local storage to store data on a user's browser across different sessions. Only works across same browser accessing same website on same device
+ - You can also use local storage to store things to then display when databases and stuff can't be accessed. We should save to local whenever a user is using it
+ - Four main functions of local storage:
+| Function             | Meaning                                      |
+| -------------------- | -------------------------------------------- |
+| setItem(name, value) | Sets a named item's value into local storage |
+| getItem(name)        | Gets a named item's value from local storage |
+| removeItem(name)     | Removes a named item from local storage      |
+| clear()              | Clears all items in local storage            |
+
+
+ - Local storage must be string, boolean, or number. To store object or array, convert to JSON with JSON.stringify() and convert back with JSON.parse()
+
+
+## Promises:
+ - You can asynchronously execute code (execute in parallel) using promises
+ - Promise object can either be:
+    - pending - running asynchronously
+    - fulfilled - successfully completed
+    - rejected - failed to complete
+ - Promise function takes two functions as parameters: resolve and reject. Use them to put promise in fulfilled and rejected states respectively
+ - We use `then` `catch` and `finally` with Promise functions to handle results of fulfilled/rejected
+ - Observer patterns are another way to do asynchronous stuff. We probably won't use them.
+
+
+
+## Async/Await
+ - async/await syntax is another, more concise way of doing asynchronous execution
+ - Await keyword wraps a promise. It will block until Promise state is fulfilled. Throws an exception if promise is rejected
+
+```js
+const coinToss = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (Math.random() > 0.1) {
+        resolve(Math.random() > 0.5 ? 'heads' : 'tails');
+      } else {
+        reject('fell off table');
+      }
+    }, 1000);
+  });
+};
+```
+
+We can create equivalent executions with either a promise `then/catch` chain, or an `await` with a `try/catch` block.
+
+**then/catch chain version**
+
+```js
+coinToss()
+  .then((result) => console.log(`Toss result ${result}`))
+  .catch((err) => console.error(`Error: ${err}`))
+  .finally(() => console.log(`Toss completed`));
+```
+
+**async, try/catch version**
+
+```js
+try {
+  const result = await coinToss();
+  console.log(`Toss result ${result}`);
+} catch (err) {
+  console.error(`Error: ${err}`);
+} finally {
+  console.log(`Toss completed`);
+}
+```
+
+
+ - Await can only be called at the top level of Javascript or in a function defined with `async` keyword
+ - the async keyword transforms the function so that it returns a promise that will resolve to the value that was previously returned by the function
+ - Calling await on an async function will return result of the promise
+
+
+
+## Debugging JavaScript:
+ - Follow a pattern of writing a block of code and then stepping through, or debugging, the block before moving on
+ - Take the following steps to see the result of console debugging.
+
+  1. Create the above files in a test directory named testConsole
+  2. Open the testConsole directory in VS Code
+  3. Run index.html using the VS Code Live Server extension
+  4. Open the Chrome browser debugger (press `F12`)
+  5. Select the `Console` tab
+  6. Refresh the browser
+
+ - Breakpoints make the code execute and then stop on the line you want
+ - Use console.log to output the state of code at certain key moments
+ - With the browser paused in the debugger you can move your mouse cursor over a variable to see its value, see what variables are in scope, set watches on variables, or use the console to interact with the code.
+ - This gives you complete control to inspect what the JavaScript code is doing and experiment with possible alternative directions for the code. Take some time to poke around in the debugger. Learning how to exploit its functionality will make you a much better web developer.
+
+
+
