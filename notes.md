@@ -538,6 +538,408 @@ A JSON document contains one of the following data types, most commonly an objec
  - Objects have key-value pairs, where the key is always a string
  - Strings are always double quotes
  - Convert to and from Javascript with JSON.parse and JSON.stringify functions
- - 
+
+
+
+# Week 7:
+
+## UX:
+ - Always start off by thinking of user and how they interact, not on how cool your technology is
+ - Think of User Experience as a story. We want to get them to applaud
+ - The homepage should be simple. The fewer things there are for the user to process, the better they can engage with the page
+ - Make the homepage something that immediately directs a user to focus on a single purpose
+ - You want to be consistent enough with the general web that it's not hard for users to use your application, but also a little unique and fun
+ - First step in building an application should be designing an application map of all the views and navigtion the users will deal with
+ - If your application map starts looking like a governmental bureaucracy then you probably want to reconsider the interrelation of functionality
+ - A breadcrumb control lists the path the user took
+ - If you want international design with many languages, you need to consider that in the design from the beginning
+ - Animation should be done in moderation
+
+### Colors:
+ - In making a color scheme, we should pick a primary, secondary, and focus color
+ - Use Paletton or Adobe to help select colors
+ - Stick with color scheme even with font color and images that are included
+
+### Typography:
+ - Four different groups of fonts:
+     - Serif
+     - Sans Serif
+     - Monospace (all letters same size)
+     - Handwriting
+  
+ - Restrict number of fonts you have to three or fewer
+ - Sans serif is for buttons, navigation links, and body text
+ - Serif is for paragraph headings
+ - Monospace is for coding examples or text needing alignment
+
+### Iconography and Text:
+ - Use common, already established icons:
+ - There are lots of standard icon packages that you can choose from. This includes packages such as [Font Awesome](https://fontawesome.com/), [Bootstrap Icons](https://icons.getbootstrap.com/), [Material Icons](http://google.github.io/material-design-icons/), [Flat Color Icons](https://github.com/icons8/flat-color-icons), and [Ant Design Icons](https://github.com/ant-design/ant-design-icons)
+
+There are 5 different predetmined categories of text with predefined font size suggestions:
+| Purpose        | Size     |
+| -------------- | -------- |
+| Page title     | 96 px    |
+| Titles         | 48-20 px |
+| Text           | 16 px    |
+| Secondary text | 14 px    |
+| Input          | 16 px    |
+
+ - You can set a max width for paragraphs. 60-80 characters is best. 35em is a good guideline
+
+### Whitespace:
+ - Whitespace will control where a user looks. USE IT
+ - Don't use images ase space fillers
+
+### Decision Fatigue:
+ - Time to make a decision increases logarithmically as number of choices increase
+ - Limit the number of choices the user has to make. Especially the ones presented at the same time
+
+### Performance:
+ - Speed of application reaction to users greatly impacts how much users use the application. If it takes 5 seconds, 90% of users leave
+ - The initial load can take a bit. Use a loading animation to simulate progress and entertain users
+ - Make sure you have a bckup for your website to run even if it can't access third party things or some functionality is down
+
+### Legal:
+ - There are many laws and acts that could regulate your website. Some of that culd deal with making the site accessible for all those with disabilities or managing records and data confidentially
+
+### Walls:
+#### Payment:
+ - Make sure they see the value of the application and can use it significantly before they have to pay
+ - Entering payment information is best if done using associated credential like Google Wallet
+#### Failure:
+ - Eventually the application will fail. Make sure to present a message to tel the user what happened and offer a possible solution. Don't just break
+
+
+
+
+## More JS
+
+### RegEx:
+ - You can create a regex using objreg = new RegExp(asdf); or using literalRegex = asdf;
+ - The `string` class has several functions that accept regular expressions. This includes `match`, `replace`, `search`, and `split`. For a quick test to see if there is a match you can use the regular expression object's `test` function.
+
+
+### Rest and Spread:
+ - You can use the rest parameter when you don't know how many parameters there will be. For example in defining a function. Precede the last parameter of a function to make it a rest parameter. Will turn all the rest of the things passed into an array
+ - Spread is also called by ... but not as function parameters. It will take an iterable and separate it out into its individual elements
+
+
+### Exceptions:
+ - To catch an exception we use try catch syntax. You write try with what you want to do, then a catch block with what the system should do if it it throws an exception
+ - You can add a finally block afterwards that will run after the catch block no matter what
+ - You can use 'throw new Error();' syntax to make the system throw an exception. It'll execute the codee in the parentheses
+ - Restrict exceptions to only really meaningful and significant exceptions
+ - Fallbacks - basically when you put an alternate implementation in the catch block so your code always returns and does something, it doesn't just stop
+
+
+### Destructuring:
+ - This is not destructing!!
+ - Process of pulling items out of a larger item, like an array or object
+ - Process looks like this:
+    ```js
+    const a = [1, 2, 4, 5];
+    
+    // destructure the first two items from a, into the new variables b and c
+    const [b, c] = a;
+    
+    console.log(b, c);
+    // OUTPUT: 1, 2
+    ```
+ - destructured part goes on the left side of the equation
+ - You can use rest syntax to combine the trailing end of items from the object. For instance:
+    ```js
+    const [b, c, ...others] = a;
+    
+    console.log(b, c, others);
+    // OUTPUT: 1, 2, [4,5]
+    ```
+ - With objects you specify properties that you want to pull from the object. That's because every object is like a map. It has a collection of properties and values (or functions) associated with them
+ - You can map the names of these object properties to new names:
+ - You can also provide default values
+
+   ```js
+    const o = { a: 1, b: 'animals', c: ['fish', 'cats'] };
+    
+    const { a: count, b: type } = o;
+    
+    console.log(count, type);
+    // OUTPUT 1, animals
+    ```
+
+
+### Objects and Classes:
+ - A JS object represents a collection of name-value pairs. We call those pairs properties
+ - Property name is either a string or a symbol, but the value can be whatever the heck you want it to be. Function, object, a tomato
+ - You must define a constructor for the object so that you can make a new one
+ - You can declare new properties directly from your file
+ - You can access properties using obj.prop() or obj[prop]. Console.log() will also output all the properties
+ - Javascript also has an object object. That's fun
+ - Use get andset for functions that will be getter and setter functions:
+    get weather() {return this._weather;}
+    set weather(weather) {this._weather = weather;}
+
+#### Fun things:
+ - You can declare a variable with object-literal syntax. That means you haven't defined that object class in another part of the code:
+    ```js
+    const obj = {
+      a: 3,
+      b: 'fish',
+    };
+    ```
+
+Here are some static functions all objects have:
+| Function | Meaning                             |
+| -------- | ----------------------------------- |
+| entries  | Returns an array of key value pairs |
+| keys     | Returns an array of keys            |
+| values   | Returns an array of values          |
+
+ - A function that returns an object is called a constructor
+ - Use the this pointer in the constructor to refer to the object
+ - You can define a class for an object or you can just define the objects in one-off situations. Depends if you're gonna use it multiple times or not
+ - Make class properties and functions private by prefixing them with a #. Like so: #name || this.#name = name
+ - Use the extend keyword when making a class to use inheritance. Super function will pass to parent class. class Employee extends Person{}
+
+
+### Scope:
+ - Scope is the variables that are visible in the curent context of execution. There are four types:
+      Global - visible to all code
+      Module - visible to all code running in a module
+      Function - visible within a function
+      Block - visible within a block of code delimited by {}
+
+ - Using var to define a variable ignores block scope. That's why we don't use it
+ - this keyword is automaticaly instantiated and points to an object that contains the context within the scope of the currently executing line of code:
+
+1. **Global** - When this is referenced outside a function or object it refers to the globalThis object. The globalThis object represents the context for runtime environment. For example, when running in a browser, globalThis refers to the browser's window object.
+2. **Function** - When this is referenced in a function it refers to the object that owns the function. That is either an object you defined or globalThis if the function is defined outside of an object. Note that when running is JavaScript strict mode, a global function's this variable is undefined instead of globalThis.
+3. **Object** - When this is referenced in a object it refers to the object.
+
+ - A function inside a class that uses this will refer to that object in that class
+
+
+### Closure:
+ - A closure is a function and its surounding state
+ - Whatever variables are accessible at the point when a function is created are available in that function
+ - Arrow functions inherit pointer of their creation context. Their this will be global if their in global frame
+
+
+### Javascript Modules:
+ - Modules allow partitioning and sharing of code
+ - Node.js lets us import packages
+ - In order to differentiate between the two implementations, Node.js modules are called CommonJS modules, and JavaScript modules are called ES modules. For this discussion, we will focus only on ES modules.
+ - You must export objects from one file and them import them into another file to use them:
+
+**alert.js**
+
+```js
+export function alertDisplay(msg) {
+  alert(msg);
+}
+```
+
+You can import the module's exported function into another module using the `import` keyword.
+
+**main.js**
+
+```js
+import { alertDisplay } from './alert.js';
+
+alertDisplay('called from main.js');
+```
+
+ - When using ES modules in the browser, modules can only be called from other modules. You cannot access JavaScript contained in a module from the global scope that your non-module JavaScript is executing in.
+ - Use <script type="module> to specify that it's an ES module
+ - If we want to use a module in the global scope that our HTML or other non-module JavaScript is executing in, then we must leak it into the global scope by either attaching an event handler, or explicitly adding a function, to the global window object.
+
+```html
+<html>
+  <body>
+    <script type="module">
+      import { alertDisplay } from './alert.js';
+      window.btnClick = alertDisplay;
+
+      document.body.addEventListener('keypress', function (event) {
+        alertDisplay('Key pressed');
+      });
+    </script>
+    <button onclick="btnClick('button clicked')">Press me</button>
+  </body>
+</html>
+```
+
+
+ - We will use a web framework bundler to generate web application distribution code
+
+
+# Week 8:
+
+## Document Object Model:
+ - Object representation of all our wonderful HTML elements
+ - Global variable name 'document' points to root element of the DOM
+ - DOM Element Interface is implemented by all HTML elements. It allows for manipulating attributes
+ - You can provide a CSS selector to the querySelectorAll function in order to select elements from the document. The textContent property contains all of the element's text. You can even access a textual representation of an element's HTML content with the innerHTML property.
+
+```js
+const listElements = document.querySelectorAll('p');
+for (const el of listElements) {
+  console.log(el.textContent);
+}
+```
+
+
+### Modifying the DOM:
+ - Finally, what JS is all about
+ - DOM naturally supports inserting, modifying, and deletion of elements
+ - The querySelector() method returns the first child element that matches a specified CSS selector(s) of an element
+ - To return all the matches, use the querySelectorAll() method instead
+
+#### Inserting elements:
+You append onto an already existing parent element
+```js
+function insertChild(parentSelector, text) {
+  const newChild = document.createElement('div');
+  newChild.textContent = text;
+
+  const parentElement = document.querySelector(parentSelector);
+  parentElement.appendChild(newChild);
+}
+
+insertChild('#courses', 'new course');
+```
+
+#### Deleting elements:
+Use the removeChild function on the parent
+```js
+function deleteElement(elementSelector) {
+  const el = document.querySelector(elementSelector);
+  el.parentElement.removeChild(el);
+}
+
+deleteElement('#courses div');
+```
+
+#### Injecting HTML:
+ - Use the el.innerHTML = 'htmlhere' function to replace all the html for a given element
+ - Directly injecting HTML is a common attack method for hackers. EEK
+ - If you are injecting HTML, make sure that it cannot be manipulated by a user. Common injection paths include HTML input controls, URL parameters, and HTTP headers. Either sanitize any HTML that contains variables, or simply use DOM manipulation functions instead of using innerHTML.
+ - I need to learn what DOM Manupilation Functions there are
+ - HTML elements have the ability to call a function when an event occurs on said element. Those are 'Event Listeners'
+
+Example:
+```js
+const submitDataEl = document.querySelector('#submitData');
+submitDataEl.addEventListener('click', function (event) {
+  console.log(event.type);
+});
+```
+Commonly listened to events:
+| Event Category | Description           |
+| -------------- | --------------------- |
+| Clipboard      | Cut, copied, pasted   |
+| Focus          | An element gets focus |
+| Keyboard       | Keys are pressed      |
+| Mouse          | Click events          |
+| Text selection | When text is selected |
+
+Or you can add event listeners in the HTML:
+```html
+<button onclick='alert("clicked")'>click me</button>
+```
+
+
+## Local Storage:
+ - We can use local storage to store data on a user's browser across different sessions. Only works across same browser accessing same website on same device
+ - You can also use local storage to store things to then display when databases and stuff can't be accessed. We should save to local whenever a user is using it
+ - Four main functions of local storage:
+| Function             | Meaning                                      |
+| -------------------- | -------------------------------------------- |
+| setItem(name, value) | Sets a named item's value into local storage |
+| getItem(name)        | Gets a named item's value from local storage |
+| removeItem(name)     | Removes a named item from local storage      |
+| clear()              | Clears all items in local storage            |
+
+
+ - Local storage must be string, boolean, or number. To store object or array, convert to JSON with JSON.stringify() and convert back with JSON.parse()
+
+
+## Promises:
+ - You can asynchronously execute code (execute in parallel) using promises
+ - Promise object can either be:
+    - pending - running asynchronously
+    - fulfilled - successfully completed
+    - rejected - failed to complete
+ - Promise function takes two functions as parameters: resolve and reject. Use them to put promise in fulfilled and rejected states respectively
+ - We use `then` `catch` and `finally` with Promise functions to handle results of fulfilled/rejected
+ - Observer patterns are another way to do asynchronous stuff. We probably won't use them.
+
+
+
+## Async/Await
+ - async/await syntax is another, more concise way of doing asynchronous execution
+ - Await keyword wraps a promise. It will block until Promise state is fulfilled. Throws an exception if promise is rejected
+
+```js
+const coinToss = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (Math.random() > 0.1) {
+        resolve(Math.random() > 0.5 ? 'heads' : 'tails');
+      } else {
+        reject('fell off table');
+      }
+    }, 1000);
+  });
+};
+```
+
+We can create equivalent executions with either a promise `then/catch` chain, or an `await` with a `try/catch` block.
+
+**then/catch chain version**
+
+```js
+coinToss()
+  .then((result) => console.log(`Toss result ${result}`))
+  .catch((err) => console.error(`Error: ${err}`))
+  .finally(() => console.log(`Toss completed`));
+```
+
+**async, try/catch version**
+
+```js
+try {
+  const result = await coinToss();
+  console.log(`Toss result ${result}`);
+} catch (err) {
+  console.error(`Error: ${err}`);
+} finally {
+  console.log(`Toss completed`);
+}
+```
+
+
+ - Await can only be called at the top level of Javascript or in a function defined with `async` keyword
+ - the async keyword transforms the function so that it returns a promise that will resolve to the value that was previously returned by the function
+ - Calling await on an async function will return result of the promise
+
+
+
+## Debugging JavaScript:
+ - Follow a pattern of writing a block of code and then stepping through, or debugging, the block before moving on
+ - Take the following steps to see the result of console debugging.
+
+  1. Create the above files in a test directory named testConsole
+  2. Open the testConsole directory in VS Code
+  3. Run index.html using the VS Code Live Server extension
+  4. Open the Chrome browser debugger (press `F12`)
+  5. Select the `Console` tab
+  6. Refresh the browser
+
+ - Breakpoints make the code execute and then stop on the line you want
+ - Use console.log to output the state of code at certain key moments
+ - With the browser paused in the debugger you can move your mouse cursor over a variable to see its value, see what variables are in scope, set watches on variables, or use the console to interact with the code.
+ - This gives you complete control to inspect what the JavaScript code is doing and experiment with possible alternative directions for the code. Take some time to poke around in the debugger. Learning how to exploit its functionality will make you a much better web developer.
+
 
 
