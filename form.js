@@ -109,6 +109,26 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
+// Populate options based on motorcycles array
+motorcycles.forEach(motorcycle => {
+    // Create label element
+    const label = document.createElement('label');
+    label.setAttribute('for', motorcycle.getId()); // Set 'for' attribute to motorcycle ID
+
+    // Create input element
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.id = motorcycle.getId(); // Set input ID to motorcycle ID
+    input.name = 'motorcycle';
+    input.value = motorcycle.getName(); // Set input value to motorcycle name
+
+    // Set label text to motorcycle name
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(` ${motorcycle.getName()}`));
+    
+    // Append the option to the select element
+    additionalOptions.appendChild(label);
+});
 
 
 // Set the default checkbox to the motorcycle specified in the URL

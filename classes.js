@@ -13,7 +13,7 @@ export class Motorcycle {
     description;
     name;
 
-    constructor(year, make, model, price, type, condition, mileage, engine, recentWorkDone, description, views=0) {
+    constructor(year, make, model, price, type, condition, mileage, engine, recentWorkDone, description, views=Math.floor(Math.random()*100)) {
         this.id = Math.floor(100000 + Math.random() * 900000); // 6-digit random ID
         this.year = year;
         this.make = make;

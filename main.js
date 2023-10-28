@@ -43,11 +43,81 @@ const thirdMotorcycle = new Motorcycle(
     "Selling my beautiful black 2007 Suzuki Boulevard C50 (800cc). She's one of the first mid-sized cruisers to get fuel-injection and runs like a champ! Really stable and easy to control, this is a perfect beginner bike for someone who wants something bigger than a 250. The paint and chrome are in absolutely fantastic condition, she really glistens under the sun. The seat is the comfiest saddle you'll ever come across. Has highway bars and pegs installed too so you don't have to worry about dropping it. Clean title, only 7k miles, ready to ride. Cash or Venmo, no trades. Come take a look, I have other bikes I'm selling too! Cash in hand required for test rides, thanks!"
 );
 
-localStorage.clear();
+const fourthMotorcycle = new Motorcycle(
+    2004,
+    'Honda',
+    'VTX 1300',
+    '$3,890',
+    'Cruiser',
+    'Great',
+    '24,000 miles',
+    'V-twin',
+    ['Cleaned extensive water spot damage'],
+    "Selling my gorgeous red 2004 Honda VTX 1300. She runs fantastic and looks absolutely amazing. If you're looking for a reliable, comfortable cruiser this is the bike for you. The chrome and paint are in fantastic condition. Tires still have tons of tread left. Comes with a massive windshield and Vikingbags hard saddlebags. The best part is the Mustang seat that'll turn any ride into a luxury. Clean title, only 24k miles, ready to ride. Cash or Venmo, no trades. Come take a look, I have other bikes I'm selling too! Cash in hand required for test rides, thanks!"
+);
+
+const fifthMotorcycle = new Motorcycle(
+    2007,
+    'Suzuki',
+    'Boulevard S40',
+    '$2,690',
+    'Cruiser',
+    'Like New',
+    '22,000 miles',
+    'Inline twin',
+    ['Carburetor rebuild', 'New tires'],
+    "Selling my beautiful blue 2007 Suzuki Boulevard S40. She rides fantastic and is really easy to control. Super beginner friendly and the blue really stands out on the street. This bike is a phenomenal example of everything that makes a great motorcycle, without all the extra bells and whistles. The paint and chrome are in great condition. The tires still have tons of tread. The windshield comes off super easily if that's not your style as well. Her single-cylinder 650cc engine and belt drive means maintenance is minimal and easy. Clean title, only 22k miles, ready to ride. Cash or Venmo, no trades. Come take a look, I have other bikes I'm selling too! Cash in hand required for test rides, thanks!"
+);
+
+const sixthMotorcycle = new Motorcycle(
+    2018,
+    'Yamaha',
+    'Vstar 250',
+    '$3,490',
+    'Cruiser',
+    'Like New',
+    '3,300 miles',
+    'V-twin',
+    ['Reupholstered seat', 'New headlight'],
+    "Selling my gorgeous purple 2018 Yamaha Vstar 250. This is the quintessential beginner cruiser and she runs amazing. Super lightweight and easy to handle. Gets 80 miles to the gallon and is super comfortable. She has a super low seat height which is perfect for shorter riders. I can't recommend the Vstar high enough for someone getting into riding. This bike is practically new with only 3300 miles. Starts really easy and runs incredibly well. New LED headlight and blinkers. If you want something you can just pick up and ride, this is the bike for you. Clean title, only 3.3k miles, ready to ride. Cash or Venmo, no trades. Come take a look, I have other bikes I'm selling too! Cash in hand required for test rides."
+);
+
+const seventhMotorcycle = new Motorcycle(
+    1998,
+    'Kawasaki',
+    'KLR 650',
+    '$2,890',
+    'Adventure',
+    'Good',
+    '33,000',
+    'Single cylinder',
+    ['New paint', 'New fork seals', 'New mirrors'],
+    "Selling my beautiful blue 1998 Kawasaki KLR 650. These bikes have a reputation for being bulletproof and this one lives up to that every bit. She starts easy and runs like a dream every time. Super fun to take off-roading but also really easy to ride on the street, I can't recommend this bike enough. New fork seals, new mirrors, new lever guards. Knobby tires are in great shape with 90% life on them. The seat is in fantastic shape and is honestly one of the comfiest to ride. She's ready to rip just needs a new home! Clean title, only 33k miles, ready to ride. Cash or Venmo, no trades. Come take a look, I have other bikes I'm selling too! Cash in hand required for test rides, thanks!"
+);
+
+const eighthMotorcycle = new Motorcycle(
+    2005,
+    'Kawasaki',
+    'Concours 1000',
+    '$2,790',
+    'Cruiser',
+    'Like New',
+    '35,000 miles',
+    'Inline four',
+    ['New seat', 'Oil change'],
+    "Selling my beautiful bronze 2005 Kawasaki Concours 1000. These things have a reputation for absurd reliability, and this one lives up to it every bit. Starts and runs super smoothly, shifts strong. I've had over 100 bikes and this one is hands down the comfiest, the saddle makes you forget it's there. Seriously, if you're looking for a good bike to commute on, look no further. It's an inline 4 and revs a lot better than most touring bikes. Super comfortable and stable, and the biggest handbags around. Clean title, only 35k miles, ready to ride. Cash or Venmo, no trades. Come take a look, I have other bikes I'm selling too! Cash in hand required for test rides."
+);
+
+
 // Saving motorcycle objects to local storage
 localStorage.setItem('motorcycle1', JSON.stringify(firstMotorcycle));
 localStorage.setItem('motorcycle2', JSON.stringify(secondMotorcycle));
 localStorage.setItem('motorcycle3', JSON.stringify(thirdMotorcycle));
+localStorage.setItem('motorcycle4', JSON.stringify(fourthMotorcycle));
+localStorage.setItem('motorcycle5', JSON.stringify(fifthMotorcycle));
+localStorage.setItem('motorcycle6', JSON.stringify(sixthMotorcycle));
+localStorage.setItem('motorcycle7', JSON.stringify(seventhMotorcycle));
+localStorage.setItem('motorcycle8', JSON.stringify(eighthMotorcycle));
 
 function updateViewsDisplay(card, views) {
     card.querySelector('.views').textContent = views;
