@@ -72,8 +72,13 @@ For this deliverable I built out the structure of my application using HTML.
 For this deliverable I properly styled the webpage into its final appearance.
 
 **Header, footer, and main content body** - Added proper color and spacing
+
 **Navigation elements** - I formatted the navigation menu into a menu at the top
+
 **Responsive to window resizing** - The webpage properly adjusts to display well on phones or small browsers. Main changes being the shifting of table elements to be in one portrait-style table as the browser shifts sizes.
+
 **Application elements** - Used good contrast and whitespace
+
 **Application text content** - Consistent fonts and styling
+
 **Application images** - Adjusted the styling of the images and their place on the page
