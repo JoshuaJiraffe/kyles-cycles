@@ -3,6 +3,10 @@
     margin: 20px;
 }
 
+.additional-options {
+    display: none;
+}
+
 .custom-form {
     max-width: 400px;
     margin: 0 auto;

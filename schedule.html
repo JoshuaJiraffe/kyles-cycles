@@ -83,53 +83,76 @@
                 <div class="form-group">
                     <p>Are you interested in looking at other motorcycles during this appointment?
                     <label>
-                        <input type="radio" name="yesno" value="yes"> Yes
+                        <input type="radio" name="yesno" value="yes" id="yesRadio"> Yes
                     </label>
                     <label>
-                        <input type="radio" name="yesno" value="no" checked> No
+                        <input type="radio" name="yesno" value="no" id="noRadio" checked> No
                     </label></p>
                 </div>
-                <div class="form-group">
-                    <p>Select which motorcycles you are interested in looking at:</p>
-                    <label for="vulcan500">
-                        <input type="checkbox" id="vulcan500" name="motorcycle" value="2009 Kawasaki Vulcan 500" checked> 2009 Kawasaki Vulcan 500
-                    </label>
-                    <label for="boulevardS40">
-                        <input type="checkbox" id="boulevardS40" name="motorcycle" value="2007 Suzuki Boulevard S40"> 2007 Suzuki Boulevard S40
-                    </label>
-                    <label for="boulevard800">
-                        <input type="checkbox" id="boulevard800" name="motorcycle" value="2007 Suzuki Boulevard 800"> 2007 Suzuki Boulevard 800
-                    </label>
-                    <label for="vtx1300">
-                        <input type="checkbox" id="vtx1300" name="motorcycle" value="2004 Honda VTX 1300"> 2004 Honda VTX 1300
-                    </label>
-                    <label for="klr650">
-                        <input type="checkbox" id="klr650" name="motorcycle" value="1998 Kawasaki KLR 650"> 1998 Kawasaki KLR 650
-                    </label>
-                    <label for="concours1000">
-                        <input type="checkbox" id="concours1000" name="motorcycle" value="2005 Kawasaki Concours 1000"> Kawasaki Concours 1000
-                    </label>
-                    <label for="multistrada1200">
-                        <input type="checkbox" id="multistrada1200" name="motorcycle" value="2010 Ducati Multistrada 1200S"> 2010 Ducati Multistrada 1200S
-                    </label>
-                    <label for="vstar250">
-                        <input type="checkbox" id="vstar250" name="motorcycle" value="2018 Yamaha Vstar 250"> 2018 Yamaha Vstar 250
-                    </label>
-                <br/>
+                <div class="additional-options">
+                    <div class="form-group">
+                        <p>Select which motorcycles you are interested in looking at:</p>
+                        <label for="vulcan500">
+                            <input type="checkbox" id="vulcan500" name="motorcycle" value="2009 Kawasaki Vulcan 500"> 2009 Kawasaki Vulcan 500
+                        </label>
+                        <label for="boulevardS40">
+                            <input type="checkbox" id="boulevardS40" name="motorcycle" value="2007 Suzuki Boulevard S40"> 2007 Suzuki Boulevard S40
+                        </label>
+                        <label for="boulevard800">
+                            <input type="checkbox" id="boulevard800" name="motorcycle" value="2007 Suzuki Boulevard 800"> 2007 Suzuki Boulevard 800
+                        </label>
+                        <label for="vtx1300">
+                            <input type="checkbox" id="vtx1300" name="motorcycle" value="2004 Honda VTX 1300"> 2004 Honda VTX 1300
+                        </label>
+                        <label for="klr650">
+                            <input type="checkbox" id="klr650" name="motorcycle" value="1998 Kawasaki KLR 650"> 1998 Kawasaki KLR 650
+                        </label>
+                        <label for="concours1000">
+                            <input type="checkbox" id="concours1000" name="motorcycle" value="2005 Kawasaki Concours 1000"> Kawasaki Concours 1000
+                        </label>
+                        <label for="multistrada1200">
+                            <input type="checkbox" id="multistrada1200" name="motorcycle" value="2010 Ducati Multistrada 1200S"> 2010 Ducati Multistrada 1200S
+                        </label>
+                        <label for="vstar250">
+                            <input type="checkbox" id="vstar250" name="motorcycle" value="2018 Yamaha Vstar 250"> 2018 Yamaha Vstar 250
+                        </label>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="terms">
                     <input type="checkbox" id="terms" name="terms" required> I understand that in order to test ride any motorcycle, I must bring, in cash, the full price of that motorcycle. An employee will hold this money while I test ride the motorcycle as liability coverage in case I crash or otherwise damage the motorcycle.
                     </label>
                 </div>
-                </div>
+                <div>
                     <input type="submit" value="Schedule Appointment">
                 </div>
             </form>
+                        <!-- Google Calendar Appointment Scheduling begin -->
+            <!-- <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+            <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+            <script>
+            (function() {
+            var target = document.currentScript;
+            window.addEventListener('load', function() {
+                calendar.schedulingButton.load({
+                url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ12GjEOz6fCRiNEJUYMNSGa9_4kD9nWs9yKocQwx-1jCALdZI3AIQ21ndLe33zJP4gOGnXwKst1?gv=true',
+                color: '#039BE5',
+                label: 'Book an appointment',
+                target,
+                });
+            });
+            })();
+            </script>
+            end Google Calendar Appointment Scheduling
+                        Google Calendar Appointment Scheduling begin
+            <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ12GjEOz6fCRiNEJUYMNSGa9_4kD9nWs9yKocQwx-1jCALdZI3AIQ21ndLe33zJP4gOGnXwKst1?gv=true" style="border: 0" width="100%" height="600" frameborder="0"></iframe> -->
+            <!-- end Google Calendar Appointment Scheduling --> 
             <br/>
             <hr/>
         </main>
         <footer class="footer">
             <h12> Something doesn't look right? Shoot us an email at kyles.cycles.help@gmail.com</h12>
         </footer>
+        <script type="module" src="form.js"></script>
     </body>
 </html>
