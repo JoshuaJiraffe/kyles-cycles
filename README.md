@@ -82,3 +82,17 @@ For this deliverable I properly styled the webpage into its final appearance.
 **Application text content** - Consistent fonts and styling
 
 **Application images** - Adjusted the styling of the images and their place on the page
+
+
+
+## JavaScript deliverable
+
+For this deliverable I implemented by JavaScript so that the application responds to the user input and I put in placeholder code to represent future technologies.
+
+- **login** - When you login your information is saved in local storage and it takes you back to the home page
+  
+- **database** - Here's where the meat of my JavaScript is at. Local Storage is currently simulating the future database. Motorcycle objects with all their relevant info are stored there and that information is called to form the cards on the homepage, fill the info on the motorcycle page, and create the customized scheduling form. Fun thing I learned, it's really annoying to try to go to JSON and back if you have private data fields. Eventually I gave up on privacy. Mostly.
+  
+- **WebSocket** - The number of views currently "works" but only using local storage. If you look closely when you click on a bike, you'll see the view count increase by 1 before it takes you to the next page. Unfortunately this view count will reset (it's currently randomly assigned) if you go back to the home page but that is because of how the current database javascript implementation works. Because I don't have access to an actual database, I have some hard-coded motorcycles that are automatically generated each time you go to the home page and then passed into local storage where they are then called from in other parts of the webpage. This is all to simulate future database action. However, it also means that each time you go to the main page the view count resets because new Motorcycle objects are being created in the JavaScript.
+ 
+- **application logic** - There is added functionality to sort the motorcycles based on their price, age, all that fun stuff. Also you can scroll through the 'different' images on the individual motorcycle page. So yeah, that's fun.
