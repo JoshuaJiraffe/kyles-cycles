@@ -1166,4 +1166,435 @@ fetch('https://jsonplaceholder.typicode.com/posts', {
 ```
 
 
+### Service Design
+
+ - Web services need to be easy to use, performant, and extensible
+ - Before creating a service, model what the different objects are and how they'll interact with each other. It should be easy to understand for the user
+ - Don't try to recreate functionality already available in HTTP
+
+#### Endpoints:
+ - A web service is divided up into various service endpoints each with an individual functional purpose
+ - Service endpoints are sometimes called APIs
+ - In HTTP everything is a resource that is acted on with a verb
+ - Resource referenced with HTTP request should be readable in URL path
+ - The clients of your service endpoints should ignore anything that they don't understand
+ - Endpoints should be simple!!! Make sure they do only one thing!
+
+#### Exposing Endpoints:
+
+##### RPC:
+ - Remote Procedure Calls exposes service endpoints as simple function calls. Uses POST
+
+##### REST:
+ - Representational State Transfer uses verbs that always act on a resource
+
+##### GRAPHQL:
+ - Focuses on manipulation of data rather than a function call or resource.
+ - Can get a lot of information in one big JSON call
+ - Only one endpoint: the query endpoint
+
+
+### Node.js
+
+ - First successful application for running JavaScript outside of a browser
+ - Makes it so JS can run on the server
+ - Browsers run JS by using a JS interpreter and an execution engine
+ - Node.js takes Google's V8 engine and puts it in the console. Good for them
+ - These commands will install NVM (Node Version Manager):
+
+```sh
+➜ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
+➜ . ~/.nvm/nvm.sh
+```
+
+```sh
+➜ nvm install --lts
+```
+
+Check your version of Node and that it's running like this:
+```sh
+➜ node -v
+v18.13.0
+```
+
+Run JavaScript code from the console with Node like this:
+```sh
+➜  node -e "console.log(1+1)"
+2
+```
+
+ - To run entire files where we already have code written, use node <filename>. e.g. node index.js
+ - To directly type lines of js in and have them execute, just type `node` and you'll enter interpretive mode
+
+#### Node Package Manager (NPM)
+ - Many prepackaged bundles of JS are already out there. Don't reinvent the wheel. To use them we must first:
+   1. Install the package locally using NPM (NPM is automatically on machine from installing Node)
+   2. Include a `require` statement in code that uses the package name
+ - [This website](https://www.npmjs.com/) has many packages we can search for!
+ - We initialize our code to use NPM by creating a directory that will contain your JavaScript and then running `npm init`. NPM will step you through a series of questions about the project you are creating. You can press the return key for each of questions if you want to accept the defaults. If you are always going to accept all of the defaults you can use `npm init -y` and skip the Q&A.
+ - Package.json is created when you initialize code for NPM. It contains:
+   1. Metadata about the project (name, default entry JS file)
+   2. Commands you can execute to run/test/distribute code
+   3. Packages the project depends on
+
+ - To install packages we use the command `npm install <package name>`
+ - To get rid of packages use `npm uninstall <package name>`
+ - When you install packages, NPM makes a package-lock.json file and a node_modules directory
+ - package-lock tracks version of package you install
+ - node_modules contains JS files for the package
+ - Don't push the node_modules to the server or git because it is very large and the server can get it from other files. Put it in .gitignore file
+
+Here's an example of code to write in JS file to access the package:
+
+```js
+const giveMeAJoke = require('give-me-a-joke');
+giveMeAJoke.getRandomDadJoke((joke) => {
+  console.log(joke);
+});
+```
+
+Summary steps:
+1. Create your project directory
+1. Initialize it for use with NPM by running `npm init -y`
+1. Make sure `.gitignore` file contains `node_modules`
+1. Install any desired packages with `npm install <package name here>`
+1. Add `require('<package name here>')` to your application's JavaScript
+1. Use the code the package provides in your JavaScript
+1. Run your code with `node index.js`
+
+
+#### Creating a Web Service
+ - With JavaScript we can write code that listens on a network port (e.g. 80, 443, 3000, or 8080), receives HTTP requests, processes them, and then responds. We can use this to create a simple web service that we then execute using Node.js.
+
+ - Deno and Bun are other things to learn more about. Competitors to Node
+
+
+### Express
+
+ - Express is a Node package that provides support for:
+    1. Routing requests for service endpoints
+    1. Manipulating HTTP requests with JSON body content
+    1. Generating HTTP responses
+    1. Using `middleware` to add functionality
+ - We use express because it's a framework with more functionality for fully making a website
+ - Here's how we create express application:
+```sh
+➜ npm install express
+```
+
+```js
+const express = require('express');
+const app = express();
+
+app.listen(8080);
+```
+
+ - You call functions in express based on HTTP paths. The Express objects accesses all HTTP verbs as functions. Example:
+```js
+app.get('/store/provo', (req, res, next) => {
+  res.send({name: 'provo'});
+});
+```
+
+ - The get function takes two parameters, a URL path matching pattern, and a callback function that is invoked when the pattern matches. The path matching parameter is used to match against the URL path of an incoming HTTP request.
+ - The callback function has three parameters that represent the HTTP request object (req), the HTTP response object (res), and the next routing function that Express expects to be called if this routing function wants another function to generate a response.
+ - You don't need to include the next parameter if you won't use it. No rerouting
+
+#### Middleware:
+ - There are two pieces to this pattern: middleware and a mediator
+ - Middleware - Works in the middle of a request and response. Pieces of functionality
+ - Mediator - loads middleware components and determines their order of execution
+ - Express is the mediator for us. Middleware functions are the middleware components
+ - Some middleware is already in Express by default, some can be installed using Node, and some we will write ourselves
+ - Routing functions are middleware functions. Has the same basic outline: function doSomething(request, response, next)
+ - You usually call next after completing your process so the next middleware function will go
+ - The order you add functions to the Express object is the order in which they'll execute
+
+Here's an example of writing your own middleware:
+```js
+app.use((req, res, next) => {
+  console.log(req.originalUrl);
+  next();
+});
+```
+
+Here's how to use built-in middleware:
+```js
+app.use(express.static('public'));
+```
+
+You can use third party middleware by using NPM to install the packages 
+```sh
+➜ npm install cookie-parser
+```
+
+```js
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
+
+app.post('/cookie/:name/:value', (req, res, next) => {
+  res.cookie(req.params.name, req.params.value);
+  res.send({cookie: `${req.params.name}:${req.params.value}`});
+});
+
+app.get('/cookie', (req, res, next) => {
+  res.send({cookie: req.cookies});
+});
+```
+
+ - Middleware can also handle errors. It's like other middleware functions but has an error parameter as well. function errMiddle(err, req, res, next)
+ - Here's kinda a default error handler:
+```js
+app.use(function (err, req, res, next) {
+  res.status(500).send({type: err.name, message: err.message});
+});
+```
+
+
+Here's a full in-depth example of everything together:
+```js
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const app = express();
+
+// Third party middleware - Cookies
+app.use(cookieParser());
+
+app.post('/cookie/:name/:value', (req, res, next) => {
+  res.cookie(req.params.name, req.params.value);
+  res.send({cookie: `${req.params.name}:${req.params.value}`});
+});
+
+app.get('/cookie', (req, res, next) => {
+  res.send({cookie: req.cookies});
+});
+
+// Creating your own middleware - logging
+app.use((req, res, next) => {
+  console.log(req.originalUrl);
+  next();
+});
+
+// Built in middleware - Static file hosting
+app.use(express.static('public'));
+
+// Routing middleware
+app.get('/store/:storeName', (req, res) => {
+  res.send({name: req.params.storeName});
+});
+
+app.put('/st*/:storeName', (req, res) => res.send({update: req.params.storeName}));
+
+app.delete(/\/store\/(.+)/, (req, res) => res.send({delete: req.params[0]}));
+
+// Error middleware
+app.get('/error', (req, res, next) => {
+  throw new Error('Trouble in river city');
+});
+
+app.use(function (err, req, res, next) {
+  res.status(500).send({type: err.name, message: err.message});
+});
+
+// Listening to a network port
+const port = 8080;
+app.listen(port, function () {
+  console.log(`Listening on port ${port}`);
+});
+```
+
+
+
+# Week 10
+## More Web Services
+
+### Debugging Node.js
+ - We will now be debugging not in the browser but directly in VS Code
+ - To access debugger press `f5` and then select Node.js
+ - You can now see the console.log outputs. Yay
+ - Use the red dot to set a breakpoint to stop the code
+ - Run the code again by pressing `f5` and it will stop at the breakpoint
+ - `f10` will step to next line, `f11` will step into a function call, and `f5` will continue funning from the current line
+ - Stop debugger at any time using `Shift f5`
+ - To debug the webservice we set up a listening port at 8080 and then we can step into the code from the browser. Coolio
+```js
+const express = require('express');
+const app = express();
+
+app.get('/*', (req, res) => {
+  res.send({ url: req.originalUrl });
+});
+
+const port = 8080;
+app.listen(port, function () {
+  console.log(`Listening on port ${port}`);
+});
+```
+
+ - Install the nodemon package in order to have a package that will look for changes in the files and automatically restart node when it detects them: Here's the command to do that:
+`npm install -g nodemon`
+ - Then, because VS Code does not know how to launch Nodemon automatically, you need create a VS Code launch configuration. In VS Code press CTRL-SHIFT-P (on Windows) or ⌘-SHIFT-P (on Mac) and type the command Debug: Add configuration. This will then ask you what type of configuration you would like to create. Type Node.js and select the Node.js: Nodemon setup option. In the launch configuration file that it creates, change the program from app.js to main.js (or whatever the main JavaScript file is for your application) and save the configuration file. It will now debug in Nodemon and not Node
+
+
+### PM2
+ - When we run a program from the console, it'll determinate when we close the console. To keep it running, we register it as a daemon
+ - Daemons are just things that are always working in the background. Scary. We want our web services to do that
+ - Process Manager 2 makes them do that
+ - Our AWS AMI already has PM2 installed and the deploy script takes care of everything. Yay
+ - Here are some fun PM2 commands:
+| Command                                                    | Purpose                                                                          |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **pm2 ls**                                                 | List all of the hosted node processes                                            |
+| **pm2 monit**                                              | Visual monitor                                                                   |
+| **pm2 start index.js -n simon**                            | Add a new process with an explicit name                                          |
+| **pm2 start index.js -n startup -- 4000**                  | Add a new process with an explicit name and port parameter                       |
+| **pm2 stop simon**                                         | Stop a process                                                                   |
+| **pm2 restart simon**                                      | Restart a process                                                                |
+| **pm2 delete simon**                                       | Delete a process from being hosted                                               |
+| **pm2 delete all**                                         | Delete all processes                                                             |
+| **pm2 save**                                               | Save the current processes across reboot                                         |
+| **pm2 restart all**                                        | Reload all of the processes                                                      |
+| **pm2 restart simon --update-env**                         | Reload process and update the node version to the current environment definition |
+| **pm2 update**                                             | Reload pm2                                                                       |
+| **pm2 start env.js --watch --ignore-watch="node_modules"** | Automatically reload service when index.js changes                               |
+| **pm2 describe simon**                                     | Describe detailed process information                                            |
+| **pm2 startup**                                            | Displays the command to run to keep PM2 running after a reboot.                  |
+| **pm2 logs simon**                                         | Display process logs                                                             |
+| **pm2 env 0**                                              | Display environment variables for process. Use `pm2 ls` to get the process ID    |
+
+ - To setup a different subdomain that'll access a different web service, here are the steps:
+1. Add the rule to the Caddyfile to tell it how to direct requests for the domain.
+2. Create a directory and add the files for the web service.
+3. Configure PM2 to host the web service.
+
+#### Modifying Caddyfile:
+ - First we SSH into the server
+ - Copy the startup domain example and change the port number and subdomain name. Example:
+```sh
+tacos.cs260.click {
+  reverse_proxy _ localhost:5000
+  header Cache-Control none
+  header -server
+  header Access-Control-Allow-Origin *
+}
+```
+
+ - Restart caddy to load new settings with this command: `sudo service caddy restart`
+ - Caddy will now reroute to port 5000, but we haven't put any webservice there. We should do that
+
+#### Creating the web service:
+ - Copy the ~/services/startup directory to a directory that represents the purpose of your service. `cp -r ~/services/startup ~/services/tacos`
+ - The directory has an index.js file with a port listener. We just need to use the command line to using Node:
+```sh
+node index.js 5000
+```
+
+#### Configure PM2 to run the service:
+ - Currently it's only running from the console and as soon as we end that session, it'll close the service. We need it to be a daemon!
+ - In the SSH Console session run `pm2 ls` to see the services running
+ - Go to the service directory and run:
+```sh
+cd ~/services/tacos
+pm2 start index.js -n tacos -- 5000
+pm2 save
+```
+
+ - Voila, the service is there and will be there forever
+
+
+### UI Testing:
+ - Test Driven Development is a proven methodology for accelerating application creation, protecting against regression bugs, and demonstrating correctness
+ - The difficulty comes in testing code because you must actually run it in the browser
+ - Other testing problems include every one of the major browsers behaves slightly differently, viewport size makes a big difference, all the code executes asynchronously, network disruptions are common, and then there is the human factor.
+ - Let's look at some solutions
+
+#### Playwright:
+ - Playwright is used for automating tests in the browser
+ - Playwright is backed by Microsoft, integrates well with VSCode, and runs as a Node.js process. All good things
+ - First to install the Playwright directory, use the command `npm init playwright@latest`
+ - Now we install the Playwright extension for VSCode
+ - Here's an example test we would put in the `tests/example.spec.js` file
+
+```js
+import { test, expect } from '@playwright/test';
+
+test('testWelcomeButton', async ({ page }) => {
+  // Navigate to the welcome page
+  await page.goto('http://localhost:5500/');
+
+  // Get the target element and make sure it is in the correct starting state
+  const hello = page.getByTestId('msg');
+  await expect(hello).toHaveText('Hello world');
+
+  // Press the button
+  const changeBtn = page.getByRole('button', { name: 'change welcome' });
+  await changeBtn.click();
+
+  // Expect that the change happened correctly
+  await expect(hello).toHaveText('I feel not welcomed');
+});
+```
+ - To test, first we run the application using `npm run start`
+ - To run the test in VSCode we go to the `Test Explorer` tab
+ - From there we can run the tests and see what they output. Yay
+
+
+#### BrowserStack:
+ - BrowserStack is used to test how things run on different devices
+ - BrowserStack actually runs your code/service on real devices in their headquarters and you can see how it works. Nifty
+ - Costs money but there are free trials. Yay
+
+
+
+### Endpoint Testing:
+ - Testing services is easier than UI testing cause we don't need a browser. It's important to learn how to write tests
+ - Jest is the current best testing package for Express driven services
+ - Any file with the suffix `.test.js` is considered a testing file and Jest will use it
+ - Call the test function to write a test. We don't need to use require to import Jest. It automatically comes in
+ - Here's an example of what a test looks like:
+```js
+test('that equal values are equal', () => {
+  expect(false).toBe(true);
+});
+```
+
+ - First parameter in test is a human-readable description
+ - Second parameter is the function to call
+ - Here's how we install Jest package: `npm install jest -D`
+ - -D on a package tells Node it's a development package and wont be included when we do production release
+ - Now, replace the `scripts` section of the `package.json` file with a new command that will run our tests with Jest.
+
+```json
+"scripts": {
+  "test": "jest"
+},
+```
+
+ - Now run `npm run test` and it will run beautifully
+ - To test endpoints we need another package to make HTTP requests without sending them over a network. `npm install supertest -D`
+ - Import the express service and request function from supertest into the test file to use it
+ - You make an HTTP request by passing the Express object (app) to the request function from supertest and then chaining on verb functions and the endpoint path and expect functions
+ - End function has an error we pass to the done function. Otherwise just call done normally
+
+```js
+const request = require('supertest');
+const app = require('./server');
+
+test('getStore returns the desired store', (done) => {
+  request(app)
+    .get('/store/provo')
+    .expect(200)
+    .expect({ name: 'provo' })
+    .end((err) => (err ? done(err) : done()));
+});
+```
+
+ - Learning this TDD is super important. We can even write tests first and from their write our actual code. yay
+
+
+### Converting JS application into a Web Application
+ - This is most of what I have to do for the project. Ezpz
+ - 
 
