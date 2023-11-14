@@ -96,3 +96,14 @@ For this deliverable I implemented by JavaScript so that the application respond
 - **WebSocket** - The number of views currently "works" but only using local storage. If you look closely when you click on a bike, you'll see the view count increase by 1 before it takes you to the next page. Unfortunately this view count will reset (it's currently randomly assigned) if you go back to the home page but that is because of how the current database javascript implementation works. Because I don't have access to an actual database, I have some hard-coded motorcycles that are automatically generated each time you go to the home page and then passed into local storage where they are then called from in other parts of the webpage. This is all to simulate future database action. However, it also means that each time you go to the main page the view count resets because new Motorcycle objects are being created in the JavaScript.
  
 - **application logic** - There is added functionality to sort the motorcycles based on their price, age, all that fun stuff. Also you can scroll through the 'different' images on the individual motorcycle page. So yeah, that's fun.
+
+
+## Service deliverable
+
+For this deliverable I added backend endpoints that get the different motorcycles for the main page as well as details about them on their subpages, endpoints for scheduling appointments and getting appointment details.
+
+- **Node.js/Express HTTP service** - I did it
+- **Static middleware for frontend** - I did it
+- **Calls to third party endpoints** - I used an endpoint for creating unique IDs for both motorcycles and the appointments
+- **Backend service endpoints** - Endpoints for all the things described above.
+- **Frontend calls service endpoints** - I did this using the fetch function.
