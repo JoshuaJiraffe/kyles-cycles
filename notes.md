@@ -1596,5 +1596,14 @@ test('getStore returns the desired store', (done) => {
 
 ### Converting JS application into a Web Application
  - This is most of what I have to do for the project. Ezpz
- - 
+ - Steps:
+
+1. Move all previous code files into a directory called `public`
+2. Make index.js file where we start our service
+3. Within the project directory run npm init -y. This configures the directory to work with node.js.
+4. Modify or create .gitignore to ignore node_modules.
+5. Install the Express package by running npm install express. This will write the Express package dependency in the package.json file and install all the Express code to the node_modules directory.
+6. Create a file named index.js in the root of the project. This is the entry point that node.js will call when you run your web service.
+7. Add the basic Express JavaScript code needed to host the application static content and the desired endpoints.
+8. Modify the Simon application code to make service endpoint requests to our newly created HTTP service code.
 
