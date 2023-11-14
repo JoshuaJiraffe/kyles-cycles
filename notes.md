@@ -943,3 +943,667 @@ try {
 
 
 
+
+# Week 9
+
+## Web Services
+
+### Introduction:
+ - All the HTML, CSS, JavaScript, image files that we've written so far comprise the frontend of our web application
+ - All frontend requests and requests between devices use HTTPS
+ - We can make requests to external services by using their url to the built-in `fetch` function
+ - We also need to create our own web services to handle `fetch` requests for things like storing data persistently, providing security, running tasks, executing application logic that you don't want your user to be able to see, and communicating with other users
+ - All that is the backend
+ - Web service functions are called `endpoints` or APIs
+ - You access web service endpoints using fetch function
+ - Our backend web service we make can also reach out and access other outside web services
+
+
+
+### URL:
+ - Uniform Resource Locator
+ - Represents location of a web resource like web page, font, image, video stream, database record, or JSON object
+
+Here's how to read URL syntax: Only scheme and domain name are required, other are optional
+```yaml
+<scheme>://<domain name>:<port>/<path>?<parameters>#<anchor>
+```
+
+| Part        | Example                              | Meaning                                                                                                                                                                                                                                                                             |
+| ----------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scheme      | https                                | The protocol required to ask for the resource. For web applications, this is usually HTTPS. But it could be any internet protocol such as FTP or MAILTO.                                                                                                                            |
+| Domain name | byu.edu                              | The domain name that owns the resource represented by the URL.                                                                                                                                                                                                                      |
+| Port        | 3000                                 | The port specifies the numbered network port used to connect to the domain server. Lower number ports are reserved for common internet protocols, higher number ports can be used for any purpose. The default port is 80 if the scheme is HTTP, or 443 if the scheme is HTTPS.     |
+| Path        | /school/byu/user/8014                | The path to the resource on the domain. The resource does not have to physically be located on the file system with this path. It can be a logical path representing endpoint parameters, a database table, or an object schema.                                                    |
+| Parameters  | filter=names&highlight=intro,summary | The parameters represent a list of key value pairs. Usually it provides additional qualifiers on the resource represented by the path. This might be a filter on the returned resource or how to highlight the resource. The parameters are also sometimes called the query string. |
+| Anchor      | summary                              | The anchor usually represents a sub-location in the resource. For HTML pages this represents a request for the browser to automatically scroll to the element with an ID that matches the anchor. The anchor is also sometimes called the hash, or fragment ID.                     |
+
+Technically you can also provide a user name and password before the domain name. This was used historically to authenticate access, but for security reasons this is deprecated. However, you will still see this convention for URLs that represent database connection strings.
+
+
+ - You will sometimes hear the use of URN or URI when talking about web resources. A Uniform Resource Name (URN) is a unique resource name that does not specify location information. For example, a book URN might be urn:isbn:10,0765350386. A Uniform Resource Identifier (URI) is a general resource identifier that could refer to either a URL or a URN. With web programming you are almost always talking about URLs and therefore you should not use the more general URI.
+
+
+
+### Ports:
+ - Different ports are for different protocols (HTTP, HTTPS, SSH, FTP) or different services
+ - IANA has decided standard port numbers and what they correspond to.
+ - 0-1023 are for standard protocols.
+ - 1024-49151 are ports that have been assigned to requesting entities.
+ - 49152-65535 are dynamic
+
+Common ports:
+| Port | Protocol                                                                                           |
+| ---- | -------------------------------------------------------------------------------------------------- |
+| 20   | File Transfer Protocol (FTP) for data transfer                                                     |
+| 22   | Secure Shell (SSH) for connecting to remote devices                                                |
+| 25   | Simple Mail Transfer Protocol (SMTP) for sending email                                             |
+| 53   | Domain Name System (DNS) for looking up IP addresses                                               |
+| 80   | Hypertext Transfer Protocol (HTTP) for web requests                                                |
+| 110  | Post Office Protocol (POP3) for retrieving email                                                   |
+| 123  | Network Time Protocol (NTP) for managing time                                                      |
+| 161  | Simple Network Management Protocol (SNMP) for managing network devices such as routers or printers |
+| 194  | Internet Relay Chat (IRC) for chatting                                                             |
+| 443  | HTTP Secure (HTTPS) for secure web requests                                                        |
+
+
+ - The caddy reads in which port the request is coming from (for example 80 or 443 from http or https) and will match up with the service port like startup.kylescycles.com or simon.kylescycles.com
+ - We have to run each web service on a different port. For us, we run simon on 3000 and startup on 4000, so we won't be able to use those for different ones
+
+
+
+### HTTP:
+ - Hypertext Transfer Protocol is how the web talks. Web browser talks to web server using HTTP requests and responses
+ - Use a debugger or `curl` to see HTTP exchange:
+   
+    ```sh
+    curl -v -s http://info.cern.ch/hypertext/WWW/Helping.html
+    ```
+
+Here's the syntax for an HTTP request:
+
+```yaml
+<verb> <url path, parameters, anchor> <version>
+[<header key: value>]*
+[
+
+  <body>
+]
+```
+
+Example:
+
+```http
+GET /hypertext/WWW/Helping.html HTTP/1.1
+Host: info.cern.ch
+Accept: text/html
+```
+
+Here's the syntax for an HTTP response:
+
+```yaml
+<version> <status code> <status string>
+[<header key: value>]*
+[
+
+  <body>
+]
+```
+
+Example:
+
+```yaml
+HTTP/1.1 200 OK
+Date: Tue, 06 Dec 2022 21:54:42 GMT
+Server: Apache
+Last-Modified: Thu, 29 Oct 1992 11:15:20 GMT
+ETag: "5f0-28f29422b8200"
+Accept-Ranges: bytes
+Content-Length: 1520
+Connection: close
+Content-Type: text/html
+
+<TITLE>Helping -- /WWW</TITLE>
+<NEXTID 7>
+<H1>How can I help?</H1>There are lots of ways you can help if you are interested in seeing
+the <A NAME=4 HREF=TheProject.html>web</A> grow and be even more useful...
+```
+
+#### Verbs:
+Here are common verbs used in HTTP request:
+
+| Verb    | Meaning                                                                                                                                                                                                                                                  |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET     | Get the requested resource. This can represent a request to get a single resource or a resource representing a list of resources.                                                                                                                        |
+| POST    | Create a new resource. The body of the request contains the resource. The response should include a unique ID of the newly created resource.                                                                                                             |
+| PUT     | Update a resource. Either the URL path, HTTP header, or body must contain the unique ID of the resource being updated. The body of the request should contain the updated resource. The body of the response may contain the resulting updated resource. |
+| DELETE  | Delete a resource. Either the URL path or HTTP header must contain the unique ID of the resource to delete.                                                                                                                                              |
+| OPTIONS | Get metadata about a resource. Usually only HTTP headers are returned. The resource itself is not returned.                                                                                                                                              |
+
+#### Status Requests:
+HTTP responses need to follow standard status codes. There are 5 blocks and them some specifics:
+
+- 1xx - Informational.
+- 2xx - Success.
+- 3xx - Redirect to some other location, or that the previously cached resource is still valid.
+- 4xx - Client errors. The request is invalid.
+- 5xx - Server errors. The request cannot be satisfied due to an error on the server.
+
+| Code | Text                                                                                 | Meaning                                                                                                                           |
+| ---- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| 100  | Continue                                                                             | The service is working on the request                                                                                             |
+| 200  | Success                                                                              | The requested resource was found and returned as appropriate.                                                                     |
+| 201  | Created                                                                              | The request was successful and a new resource was created.                                                                        |
+| 204  | No Content                                                                           | The request was successful but no resource is returned.                                                                           |
+| 304  | Not Modified                                                                         | The cached version of the resource is still valid.                                                                                |
+| 307  | Permanent redirect                                                                   | The resource is no longer at the requested location. The new location is specified in the response location header.               |
+| 308  | Temporary redirect                                                                   | The resource is temporarily located at a different location. The temporary location is specified in the response location header. |
+| 400  | Bad request                                                                          | The request was malformed or invalid.                                                                                             |
+| 401  | Unauthorized                                                                         | The request did not provide a valid authentication token.                                                                         |
+| 403  | Forbidden                                                                            | The provided authentication token is not authorized for the resource.                                                             |
+| 404  | Not found                                                                            | An unknown resource was requested.                                                                                                |
+| 408  | Request timeout                                                                      | The request takes too long.                                                                                                       |
+| 409  | Conflict                                                                             | The provided resource represents an out of date version of the resource.                                                          |
+| 418  | [I'm a teapot](https://en.wikipedia.org/wiki/Hyper_Text_Coffee_Pot_Control_Protocol) | The service refuses to brew coffee in a teapot.                                                                                   |
+| 429  | Too many requests                                                                    | The client is making too many requests in too short of a time period.                                                             |
+| 500  | Internal server error                                                                | The server failed to properly process the request.                                                                                |
+| 503  | Service unavailable                                                                  | The server is temporarily down. The client should try again with an exponential back off.                                         | 
+
+#### Headers:
+HTTP headers specify metadata about a request or response:
+
+| Header                      | Example                              | Meaning                                                                                                                                                                        |
+| --------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Authorization               | Bearer bGciOiJIUzI1NiIsI             | A token that authorized the user making the request.                                                                                                                           |
+| Accept                      | image/\*                             | What content format the client accepts. This may include wildcards.                                                                                                            |
+| Content-Type                | text/html; charset=utf-8             | The format of the response content. These are described using standard [MIME](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types) types. |
+| Cookie                      | SessionID=39s8cgj34; csrftoken=9dck2 | Key value pairs that are generated by the server and stored on the client.                                                                                                     |
+| Host                        | info.cern.ch                         | The domain name of the server. This is required in all requests.                                                                                                               |
+| Origin                      | cs260.click                          | Identifies the origin that caused the request. A host may only allow requests from specific origins.                                                                           |
+| Access-Control-Allow-Origin | https://cs260.click                  | Server response of what origins can make a request. This may include a wildcard.                                                                                               |
+| Content-Length              | 368                                  | The number of bytes contained in the response.                                                                                                                                 |
+| Cache-Control               | public, max-age=604800               | Tells the client how it can cache the response.                                                                                                                                |
+| User-Agent                  | Mozilla/5.0 (Macintosh)              | The client application making the request.                                                                                                                                     |
+
+ - HTTP requests don't know about previous or future requests, but cookies can be used to track states across requests
+
+
+### SOP and CORS
+
+ - Cross-Origin Requests are requests made from one domain while displaying a website from a different domain
+ - That's dangerous because you can have a fake website requesting everything from the 'real' website
+ - Same Origin Policy only allows JavaScript to make requets to the same domain that the user is currently viewing
+ - Cross-Origin Resource Sharing lets us have security while still accessing stuff across the web
+ - CORS lets the browser tell it where the origin of the request is and then the server lets it know if that point of origin is allowed
+ - CORS only alerts users if something bad is being attempted
+ - When accessing third-party web services, you need to make sure that domain allows requests as defined by the `Access-Control-Allow-Origin` header it returns
+ - If you don't have an `Access-Control-Allow-Origin` header, it'll only allow requests from same origin
+
+
+### Fetch
+
+ - HTTP requests are what changed the internet from web 1.0 to web 2.0. It went from static content pages to web applications
+ - Fetch is the preferred API for making HTTP requests
+ - The basic usage of fetch takes a URL and returns a promise. The promise then function takes a callback function that is asynchronously called when the requested URL content is obtained. If the returned content is of type application/json you can use the json function on the response object to convert it to a JavaScript object
+ - To do a POST request you populate the options parameter with the HTTP method and headers
+
+```js
+fetch('https://jsonplaceholder.typicode.com/posts', {
+  method: 'POST',
+  body: JSON.stringify({
+    title: 'test title',
+    body: 'test body',
+    userId: 1,
+  }),
+  headers: {
+    'Content-type': 'application/json; charset=UTF-8',
+  },
+})
+  .then((response) => response.json())
+  .then((jsonResponse) => {
+    console.log(jsonResponse);
+  });
+```
+
+
+### Service Design
+
+ - Web services need to be easy to use, performant, and extensible
+ - Before creating a service, model what the different objects are and how they'll interact with each other. It should be easy to understand for the user
+ - Don't try to recreate functionality already available in HTTP
+
+#### Endpoints:
+ - A web service is divided up into various service endpoints each with an individual functional purpose
+ - Service endpoints are sometimes called APIs
+ - In HTTP everything is a resource that is acted on with a verb
+ - Resource referenced with HTTP request should be readable in URL path
+ - The clients of your service endpoints should ignore anything that they don't understand
+ - Endpoints should be simple!!! Make sure they do only one thing!
+
+#### Exposing Endpoints:
+
+##### RPC:
+ - Remote Procedure Calls exposes service endpoints as simple function calls. Uses POST
+
+##### REST:
+ - Representational State Transfer uses verbs that always act on a resource
+
+##### GRAPHQL:
+ - Focuses on manipulation of data rather than a function call or resource.
+ - Can get a lot of information in one big JSON call
+ - Only one endpoint: the query endpoint
+
+
+### Node.js
+
+ - First successful application for running JavaScript outside of a browser
+ - Makes it so JS can run on the server
+ - Browsers run JS by using a JS interpreter and an execution engine
+ - Node.js takes Google's V8 engine and puts it in the console. Good for them
+ - These commands will install NVM (Node Version Manager):
+
+```sh
+➜ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
+➜ . ~/.nvm/nvm.sh
+```
+
+```sh
+➜ nvm install --lts
+```
+
+Check your version of Node and that it's running like this:
+```sh
+➜ node -v
+v18.13.0
+```
+
+Run JavaScript code from the console with Node like this:
+```sh
+➜  node -e "console.log(1+1)"
+2
+```
+
+ - To run entire files where we already have code written, use node <filename>. e.g. node index.js
+ - To directly type lines of js in and have them execute, just type `node` and you'll enter interpretive mode
+
+#### Node Package Manager (NPM)
+ - Many prepackaged bundles of JS are already out there. Don't reinvent the wheel. To use them we must first:
+   1. Install the package locally using NPM (NPM is automatically on machine from installing Node)
+   2. Include a `require` statement in code that uses the package name
+ - [This website](https://www.npmjs.com/) has many packages we can search for!
+ - We initialize our code to use NPM by creating a directory that will contain your JavaScript and then running `npm init`. NPM will step you through a series of questions about the project you are creating. You can press the return key for each of questions if you want to accept the defaults. If you are always going to accept all of the defaults you can use `npm init -y` and skip the Q&A.
+ - Package.json is created when you initialize code for NPM. It contains:
+   1. Metadata about the project (name, default entry JS file)
+   2. Commands you can execute to run/test/distribute code
+   3. Packages the project depends on
+
+ - To install packages we use the command `npm install <package name>`
+ - To get rid of packages use `npm uninstall <package name>`
+ - When you install packages, NPM makes a package-lock.json file and a node_modules directory
+ - package-lock tracks version of package you install
+ - node_modules contains JS files for the package
+ - Don't push the node_modules to the server or git because it is very large and the server can get it from other files. Put it in .gitignore file
+
+Here's an example of code to write in JS file to access the package:
+
+```js
+const giveMeAJoke = require('give-me-a-joke');
+giveMeAJoke.getRandomDadJoke((joke) => {
+  console.log(joke);
+});
+```
+
+Summary steps:
+1. Create your project directory
+1. Initialize it for use with NPM by running `npm init -y`
+1. Make sure `.gitignore` file contains `node_modules`
+1. Install any desired packages with `npm install <package name here>`
+1. Add `require('<package name here>')` to your application's JavaScript
+1. Use the code the package provides in your JavaScript
+1. Run your code with `node index.js`
+
+
+#### Creating a Web Service
+ - With JavaScript we can write code that listens on a network port (e.g. 80, 443, 3000, or 8080), receives HTTP requests, processes them, and then responds. We can use this to create a simple web service that we then execute using Node.js.
+
+ - Deno and Bun are other things to learn more about. Competitors to Node
+
+
+### Express
+
+ - Express is a Node package that provides support for:
+    1. Routing requests for service endpoints
+    1. Manipulating HTTP requests with JSON body content
+    1. Generating HTTP responses
+    1. Using `middleware` to add functionality
+ - We use express because it's a framework with more functionality for fully making a website
+ - Here's how we create express application:
+```sh
+➜ npm install express
+```
+
+```js
+const express = require('express');
+const app = express();
+
+app.listen(8080);
+```
+
+ - You call functions in express based on HTTP paths. The Express objects accesses all HTTP verbs as functions. Example:
+```js
+app.get('/store/provo', (req, res, next) => {
+  res.send({name: 'provo'});
+});
+```
+
+ - The get function takes two parameters, a URL path matching pattern, and a callback function that is invoked when the pattern matches. The path matching parameter is used to match against the URL path of an incoming HTTP request.
+ - The callback function has three parameters that represent the HTTP request object (req), the HTTP response object (res), and the next routing function that Express expects to be called if this routing function wants another function to generate a response.
+ - You don't need to include the next parameter if you won't use it. No rerouting
+
+#### Middleware:
+ - There are two pieces to this pattern: middleware and a mediator
+ - Middleware - Works in the middle of a request and response. Pieces of functionality
+ - Mediator - loads middleware components and determines their order of execution
+ - Express is the mediator for us. Middleware functions are the middleware components
+ - Some middleware is already in Express by default, some can be installed using Node, and some we will write ourselves
+ - Routing functions are middleware functions. Has the same basic outline: function doSomething(request, response, next)
+ - You usually call next after completing your process so the next middleware function will go
+ - The order you add functions to the Express object is the order in which they'll execute
+
+Here's an example of writing your own middleware:
+```js
+app.use((req, res, next) => {
+  console.log(req.originalUrl);
+  next();
+});
+```
+
+Here's how to use built-in middleware:
+```js
+app.use(express.static('public'));
+```
+
+You can use third party middleware by using NPM to install the packages 
+```sh
+➜ npm install cookie-parser
+```
+
+```js
+const cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
+
+app.post('/cookie/:name/:value', (req, res, next) => {
+  res.cookie(req.params.name, req.params.value);
+  res.send({cookie: `${req.params.name}:${req.params.value}`});
+});
+
+app.get('/cookie', (req, res, next) => {
+  res.send({cookie: req.cookies});
+});
+```
+
+ - Middleware can also handle errors. It's like other middleware functions but has an error parameter as well. function errMiddle(err, req, res, next)
+ - Here's kinda a default error handler:
+```js
+app.use(function (err, req, res, next) {
+  res.status(500).send({type: err.name, message: err.message});
+});
+```
+
+
+Here's a full in-depth example of everything together:
+```js
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const app = express();
+
+// Third party middleware - Cookies
+app.use(cookieParser());
+
+app.post('/cookie/:name/:value', (req, res, next) => {
+  res.cookie(req.params.name, req.params.value);
+  res.send({cookie: `${req.params.name}:${req.params.value}`});
+});
+
+app.get('/cookie', (req, res, next) => {
+  res.send({cookie: req.cookies});
+});
+
+// Creating your own middleware - logging
+app.use((req, res, next) => {
+  console.log(req.originalUrl);
+  next();
+});
+
+// Built in middleware - Static file hosting
+app.use(express.static('public'));
+
+// Routing middleware
+app.get('/store/:storeName', (req, res) => {
+  res.send({name: req.params.storeName});
+});
+
+app.put('/st*/:storeName', (req, res) => res.send({update: req.params.storeName}));
+
+app.delete(/\/store\/(.+)/, (req, res) => res.send({delete: req.params[0]}));
+
+// Error middleware
+app.get('/error', (req, res, next) => {
+  throw new Error('Trouble in river city');
+});
+
+app.use(function (err, req, res, next) {
+  res.status(500).send({type: err.name, message: err.message});
+});
+
+// Listening to a network port
+const port = 8080;
+app.listen(port, function () {
+  console.log(`Listening on port ${port}`);
+});
+```
+
+
+
+# Week 10
+## More Web Services
+
+### Debugging Node.js
+ - We will now be debugging not in the browser but directly in VS Code
+ - To access debugger press `f5` and then select Node.js
+ - You can now see the console.log outputs. Yay
+ - Use the red dot to set a breakpoint to stop the code
+ - Run the code again by pressing `f5` and it will stop at the breakpoint
+ - `f10` will step to next line, `f11` will step into a function call, and `f5` will continue funning from the current line
+ - Stop debugger at any time using `Shift f5`
+ - To debug the webservice we set up a listening port at 8080 and then we can step into the code from the browser. Coolio
+```js
+const express = require('express');
+const app = express();
+
+app.get('/*', (req, res) => {
+  res.send({ url: req.originalUrl });
+});
+
+const port = 8080;
+app.listen(port, function () {
+  console.log(`Listening on port ${port}`);
+});
+```
+
+ - Install the nodemon package in order to have a package that will look for changes in the files and automatically restart node when it detects them: Here's the command to do that:
+`npm install -g nodemon`
+ - Then, because VS Code does not know how to launch Nodemon automatically, you need create a VS Code launch configuration. In VS Code press CTRL-SHIFT-P (on Windows) or ⌘-SHIFT-P (on Mac) and type the command Debug: Add configuration. This will then ask you what type of configuration you would like to create. Type Node.js and select the Node.js: Nodemon setup option. In the launch configuration file that it creates, change the program from app.js to main.js (or whatever the main JavaScript file is for your application) and save the configuration file. It will now debug in Nodemon and not Node
+
+
+### PM2
+ - When we run a program from the console, it'll determinate when we close the console. To keep it running, we register it as a daemon
+ - Daemons are just things that are always working in the background. Scary. We want our web services to do that
+ - Process Manager 2 makes them do that
+ - Our AWS AMI already has PM2 installed and the deploy script takes care of everything. Yay
+ - Here are some fun PM2 commands:
+| Command                                                    | Purpose                                                                          |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **pm2 ls**                                                 | List all of the hosted node processes                                            |
+| **pm2 monit**                                              | Visual monitor                                                                   |
+| **pm2 start index.js -n simon**                            | Add a new process with an explicit name                                          |
+| **pm2 start index.js -n startup -- 4000**                  | Add a new process with an explicit name and port parameter                       |
+| **pm2 stop simon**                                         | Stop a process                                                                   |
+| **pm2 restart simon**                                      | Restart a process                                                                |
+| **pm2 delete simon**                                       | Delete a process from being hosted                                               |
+| **pm2 delete all**                                         | Delete all processes                                                             |
+| **pm2 save**                                               | Save the current processes across reboot                                         |
+| **pm2 restart all**                                        | Reload all of the processes                                                      |
+| **pm2 restart simon --update-env**                         | Reload process and update the node version to the current environment definition |
+| **pm2 update**                                             | Reload pm2                                                                       |
+| **pm2 start env.js --watch --ignore-watch="node_modules"** | Automatically reload service when index.js changes                               |
+| **pm2 describe simon**                                     | Describe detailed process information                                            |
+| **pm2 startup**                                            | Displays the command to run to keep PM2 running after a reboot.                  |
+| **pm2 logs simon**                                         | Display process logs                                                             |
+| **pm2 env 0**                                              | Display environment variables for process. Use `pm2 ls` to get the process ID    |
+
+ - To setup a different subdomain that'll access a different web service, here are the steps:
+1. Add the rule to the Caddyfile to tell it how to direct requests for the domain.
+2. Create a directory and add the files for the web service.
+3. Configure PM2 to host the web service.
+
+#### Modifying Caddyfile:
+ - First we SSH into the server
+ - Copy the startup domain example and change the port number and subdomain name. Example:
+```sh
+tacos.cs260.click {
+  reverse_proxy _ localhost:5000
+  header Cache-Control none
+  header -server
+  header Access-Control-Allow-Origin *
+}
+```
+
+ - Restart caddy to load new settings with this command: `sudo service caddy restart`
+ - Caddy will now reroute to port 5000, but we haven't put any webservice there. We should do that
+
+#### Creating the web service:
+ - Copy the ~/services/startup directory to a directory that represents the purpose of your service. `cp -r ~/services/startup ~/services/tacos`
+ - The directory has an index.js file with a port listener. We just need to use the command line to using Node:
+```sh
+node index.js 5000
+```
+
+#### Configure PM2 to run the service:
+ - Currently it's only running from the console and as soon as we end that session, it'll close the service. We need it to be a daemon!
+ - In the SSH Console session run `pm2 ls` to see the services running
+ - Go to the service directory and run:
+```sh
+cd ~/services/tacos
+pm2 start index.js -n tacos -- 5000
+pm2 save
+```
+
+ - Voila, the service is there and will be there forever
+
+
+### UI Testing:
+ - Test Driven Development is a proven methodology for accelerating application creation, protecting against regression bugs, and demonstrating correctness
+ - The difficulty comes in testing code because you must actually run it in the browser
+ - Other testing problems include every one of the major browsers behaves slightly differently, viewport size makes a big difference, all the code executes asynchronously, network disruptions are common, and then there is the human factor.
+ - Let's look at some solutions
+
+#### Playwright:
+ - Playwright is used for automating tests in the browser
+ - Playwright is backed by Microsoft, integrates well with VSCode, and runs as a Node.js process. All good things
+ - First to install the Playwright directory, use the command `npm init playwright@latest`
+ - Now we install the Playwright extension for VSCode
+ - Here's an example test we would put in the `tests/example.spec.js` file
+
+```js
+import { test, expect } from '@playwright/test';
+
+test('testWelcomeButton', async ({ page }) => {
+  // Navigate to the welcome page
+  await page.goto('http://localhost:5500/');
+
+  // Get the target element and make sure it is in the correct starting state
+  const hello = page.getByTestId('msg');
+  await expect(hello).toHaveText('Hello world');
+
+  // Press the button
+  const changeBtn = page.getByRole('button', { name: 'change welcome' });
+  await changeBtn.click();
+
+  // Expect that the change happened correctly
+  await expect(hello).toHaveText('I feel not welcomed');
+});
+```
+ - To test, first we run the application using `npm run start`
+ - To run the test in VSCode we go to the `Test Explorer` tab
+ - From there we can run the tests and see what they output. Yay
+
+
+#### BrowserStack:
+ - BrowserStack is used to test how things run on different devices
+ - BrowserStack actually runs your code/service on real devices in their headquarters and you can see how it works. Nifty
+ - Costs money but there are free trials. Yay
+
+
+
+### Endpoint Testing:
+ - Testing services is easier than UI testing cause we don't need a browser. It's important to learn how to write tests
+ - Jest is the current best testing package for Express driven services
+ - Any file with the suffix `.test.js` is considered a testing file and Jest will use it
+ - Call the test function to write a test. We don't need to use require to import Jest. It automatically comes in
+ - Here's an example of what a test looks like:
+```js
+test('that equal values are equal', () => {
+  expect(false).toBe(true);
+});
+```
+
+ - First parameter in test is a human-readable description
+ - Second parameter is the function to call
+ - Here's how we install Jest package: `npm install jest -D`
+ - -D on a package tells Node it's a development package and wont be included when we do production release
+ - Now, replace the `scripts` section of the `package.json` file with a new command that will run our tests with Jest.
+
+```json
+"scripts": {
+  "test": "jest"
+},
+```
+
+ - Now run `npm run test` and it will run beautifully
+ - To test endpoints we need another package to make HTTP requests without sending them over a network. `npm install supertest -D`
+ - Import the express service and request function from supertest into the test file to use it
+ - You make an HTTP request by passing the Express object (app) to the request function from supertest and then chaining on verb functions and the endpoint path and expect functions
+ - End function has an error we pass to the done function. Otherwise just call done normally
+
+```js
+const request = require('supertest');
+const app = require('./server');
+
+test('getStore returns the desired store', (done) => {
+  request(app)
+    .get('/store/provo')
+    .expect(200)
+    .expect({ name: 'provo' })
+    .end((err) => (err ? done(err) : done()));
+});
+```
+
+ - Learning this TDD is super important. We can even write tests first and from their write our actual code. yay
+
+
+### Converting JS application into a Web Application
+ - This is most of what I have to do for the project. Ezpz
+ - Steps:
+
+1. Move all previous code files into a directory called `public`
+2. Make index.js file where we start our service
+3. Within the project directory run npm init -y. This configures the directory to work with node.js.
+4. Modify or create .gitignore to ignore node_modules.
+5. Install the Express package by running npm install express. This will write the Express package dependency in the package.json file and install all the Express code to the node_modules directory.
+6. Create a file named index.js in the root of the project. This is the entry point that node.js will call when you run your web service.
+7. Add the basic Express JavaScript code needed to host the application static content and the desired endpoints.
+8. Modify the Simon application code to make service endpoint requests to our newly created HTTP service code.
+
