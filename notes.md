@@ -1607,3 +1607,337 @@ test('getStore returns the desired store', (done) => {
 7. Add the basic Express JavaScript code needed to host the application static content and the desired endpoints.
 8. Modify the Simon application code to make service endpoint requests to our newly created HTTP service code.
 
+
+# Week 11
+
+## Databases:
+
+### Storage Services:
+ - We need to store a bunch of files. Usually not necessary to store on a database and we don't want to clog up the server, so we use a storage service specifically made for that
+ - AWS S3 is one of the most popular because it has unlimited storage and you only pay for storage you actually use
+ - Here are the steps for using it:
+1. Creating a S3 bucket to store your data in.
+1. Getting credentials so that your application can access the bucket.
+1. [Using](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html) the credentials in your application.
+1. Using the [SDK](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/s3-example-creating-buckets.html) to write, list, read, and delete files from the bucket.
+
+### Data services:
+ - Structured Query Language (SQL) is a programming language made for storing and processing info in databases
+ - Now there are many services for dealing with different data types. Here are some:
+| Service       | Specialty             |
+| ------------- | --------------------- |
+| MySQL         | Relational queries    |
+| Redis         | Memory cached objects |
+| ElasticSearch | Ranked free text      |
+| MongoDB       | JSON objects          |
+| DynamoDB      | Key value pairs       |
+| Neo4J         | Graph based data      |
+| InfluxDB      | Time series data      |
+
+
+#### MongoDB
+ - We use MongoDB. Yay
+ - A mongo database is made up of one or more collections that each contain JSON documents
+ - A collection is an array of JS objects, all with unique ids
+ - Use this `npm install mongodb` to install Mongo
+ - You make a client connection to the server like so:
+
+```js
+const { MongoClient } = require('mongodb');
+
+const userName = 'holowaychuk';
+const password = 'express';
+const hostname = 'mongodb.com';
+
+const url = `mongodb+srv://${userName}:${password}@${hostname}`;
+
+const client = new MongoClient(url);
+```
+
+ - We can then get a database and collection object
+ - Collection object allows insertion and querying of files
+ - Use `insertOne` function with JS object to put in database
+ - Use `find` on collection object to get documents. Without parameters it returns all documents. With parameters we can limit what we get
+ - MongoDB has a data service called Atlas that we use. Handles a lot so we don't have to. Yay!
+ - Steps for making MongoDB Atlas account:
+1. Create your account.
+2. Create a database cluster.
+3. Create your root database user credentials. Remember these for later use.
+4. ⚠ Set network access to your database to be available from anywhere.
+5. Copy the connection string and use the information in your code.
+6. Save the connection and credential information in your production and development environments as instructed above.
+
+ - We don't want to have our credentials chilling in our code because it could get hacked. That would not be bueno
+ - We'll have a configuration file with our credentials that we'll load into our production environment but never post to GitHub
+ - We can test our connection to the database just to make sure it's actually connected before we try to get/send data
+
+```js
+const config = require('./dbConfig.json');
+
+const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
+const client = new MongoClient(url);
+const db = client.db('rental');
+
+(async function testConnection() {
+  await client.connect();
+  await db.command({ ping: 1 });
+})().catch((ex) => {
+  console.log(`Unable to connect to database with ${url} because ${ex.message}`);
+  process.exit(1);
+});
+```
+
+Here's an example of writing to database and all that:
+
+```js
+const { MongoClient } = require('mongodb');
+const config = require('./dbConfig.json');
+
+async function main() {
+  // Connect to the database cluster
+  const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
+  const client = new MongoClient(url);
+  const db = client.db('rental');
+  const collection = db.collection('house');
+
+  // Test that you can connect to the database
+  (async function testConnection() {
+    await client.connect();
+    await db.command({ ping: 1 });
+  })().catch((ex) => {
+    console.log(`Unable to connect to database with ${url} because ${ex.message}`);
+    process.exit(1);
+  });
+
+  // Insert a document
+  const house = {
+    name: 'Beachfront views',
+    summary: 'From your bedroom to the beach, no shoes required',
+    property_type: 'Condo',
+    beds: 1,
+  };
+  await collection.insertOne(house);
+
+  // Query the documents
+  const query = { property_type: 'Condo', beds: { $lt: 2 } };
+  const options = {
+    sort: { score: -1 },
+    limit: 10,
+  };
+
+  const cursor = collection.find(query, options);
+  const rentals = await cursor.toArray();
+  rentals.forEach((i) => console.log(i));
+}
+
+main().catch(console.error);
+```
+
+
+## Login:
+ - We need two endpoints, one to create the authentication credential, and the other to authenticate/login with that credential
+ - We control access to other endoints based on authentication
+
+Here's an example of authentication endpoint:
+```http
+POST /auth/create HTTP/2
+Content-Type: application/json
+
+{
+  "email":"marta@id.com",
+  "password":"toomanysecrets"
+}
+```
+
+```http
+HTTP/2 200 OK
+Content-Type: application/json
+Set-Cookie: auth=tokenHere
+
+{
+  "id":"337"
+}
+```
+
+Here's an example of login endpoint:
+```http
+POST /auth/login HTTP/2
+Content-Type: application/json
+
+{
+  "email":"marta@id.com",
+  "password":"toomanysecrets"
+}
+```
+
+```http
+HTTP/2 200 OK
+Content-Type: application/json
+Set-Cookie: auth=tokenHere
+
+{
+  "id":"337"
+}
+
+```
+
+Here's an example of getMe endpoint to return info about user:
+```http
+GET /user/me HTTP/2
+Cookie: auth=tokenHere
+```
+
+```http
+HTTP/2 200 OK
+Content-Type: application/json
+
+{
+  "email":"marta@id.com"
+}
+
+```
+
+Here's an example of starter web service using login:
+```js
+const express = require('express');
+const app = express();
+
+app.post('/auth/create', async (req, res) => {
+  res.send({ id: 'user@id.com' });
+});
+
+app.post('/auth/login', async (req, res) => {
+  res.send({ id: 'user@id.com' });
+});
+
+const port = 8080;
+app.listen(port, function () {
+  console.log(`Listening on port ${port}`);
+});
+```
+
+ - With that basic service, we now need to implement endpoints
+ - We use express.json middleware to parse the HTTP requests into JS objects
+ - We make authentication tokens for each using using UUID (Universally Unique Identifier)
+ - We hash our passwords for security. Here's an example of how we do that:
+
+```js
+const bcrypt = require('bcrypt');
+
+async function createUser(email, password) {
+  // Hash the password before we insert it into the database
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  const user = {
+    email: email,
+    password: passwordHash,
+    token: uuid.v4(),
+  };
+  await collection.insertOne(user);
+
+  return user;
+}
+```
+
+ - We use HTTP Cookies to pass the authentication token to the browser in the login endpoint
+- `httpOnly` tells the browser to not allow JavaScript running on the browser to read the cookie.
+- `secure` requires HTTPS to be used when sending the cookie back to the server.
+- `sameSite` will only return the cookie to the domain that generated it.
+
+Full example code:
+```js
+const { MongoClient } = require('mongodb');
+const uuid = require('uuid');
+const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const express = require('express');
+const app = express();
+
+const userName = 'holowaychuk';
+const password = 'express';
+const hostname = 'mongodb.com';
+
+const url = `mongodb+srv://${userName}:${password}@${hostname}`;
+const client = new MongoClient(url);
+const collection = client.db('authTest').collection('user');
+
+app.use(cookieParser());
+app.use(express.json());
+
+// createAuthorization from the given credentials
+app.post('/auth/create', async (req, res) => {
+  if (await getUser(req.body.email)) {
+    res.status(409).send({ msg: 'Existing user' });
+  } else {
+    const user = await createUser(req.body.email, req.body.password);
+    setAuthCookie(res, user.token);
+    res.send({
+      id: user._id,
+    });
+  }
+});
+
+// loginAuthorization from the given credentials
+app.post('/auth/login', async (req, res) => {
+  const user = await getUser(req.body.email);
+  if (user) {
+    if (await bcrypt.compare(req.body.password, user.password)) {
+      setAuthCookie(res, user.token);
+      res.send({ id: user._id });
+      return;
+    }
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
+});
+
+// getMe for the currently authenticated user
+app.get('/user/me', async (req, res) => {
+  authToken = req.cookies['token'];
+  const user = await collection.findOne({ token: authToken });
+  if (user) {
+    res.send({ email: user.email });
+    return;
+  }
+  res.status(401).send({ msg: 'Unauthorized' });
+});
+
+function getUser(email) {
+  return collection.findOne({ email: email });
+}
+
+async function createUser(email, password) {
+  const passwordHash = await bcrypt.hash(password, 10);
+  const user = {
+    email: email,
+    password: passwordHash,
+    token: uuid.v4(),
+  };
+  await collection.insertOne(user);
+
+  return user;
+}
+
+function setAuthCookie(res, authToken) {
+  res.cookie('token', authToken, {
+    secure: true,
+    httpOnly: true,
+    sameSite: 'strict',
+  });
+}
+
+const port = 8080;
+app.listen(port, function () {
+  console.log(`Listening on port ${port}`);
+});
+```
+
+
+### Authorization Services:
+ - Once we authenticate a user, we store an authentication token on their device, usually as a cookie. The service can then associate data with that user's unique authentication token
+ - Authentication is also used to change what different users are authorized to do
+ - There are many already existing standard protocols for authentication and authorization. Yay service providers
+ - SSO (Single Sign On) is letting a user use one set of credentials for many services. Like how google is used to login to just about everything nowadays
+
+
+
+
