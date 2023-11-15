@@ -1607,3 +1607,131 @@ test('getStore returns the desired store', (done) => {
 7. Add the basic Express JavaScript code needed to host the application static content and the desired endpoints.
 8. Modify the Simon application code to make service endpoint requests to our newly created HTTP service code.
 
+
+# Week 11
+
+## Databases:
+
+### Storage Services:
+ - We need to store a bunch of files. Usually not necessary to store on a database and we don't want to clog up the server, so we use a storage service specifically made for that
+ - AWS S3 is one of the most popular because it has unlimited storage and you only pay for storage you actually use
+ - Here are the steps for using it:
+1. Creating a S3 bucket to store your data in.
+1. Getting credentials so that your application can access the bucket.
+1. [Using](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html) the credentials in your application.
+1. Using the [SDK](https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/s3-example-creating-buckets.html) to write, list, read, and delete files from the bucket.
+
+### Data services:
+ - Structured Query Language (SQL) is a programming language made for storing and processing info in databases
+ - Now there are many services for dealing with different data types. Here are some:
+| Service       | Specialty             |
+| ------------- | --------------------- |
+| MySQL         | Relational queries    |
+| Redis         | Memory cached objects |
+| ElasticSearch | Ranked free text      |
+| MongoDB       | JSON objects          |
+| DynamoDB      | Key value pairs       |
+| Neo4J         | Graph based data      |
+| InfluxDB      | Time series data      |
+
+
+#### MongoDB
+ - We use MongoDB. Yay
+ - A mongo database is made up of one or more collections that each contain JSON documents
+ - A collection is an array of JS objects, all with unique ids
+ - Use this `npm install mongodb` to install Mongo
+ - You make a client connection to the server like so:
+
+```js
+const { MongoClient } = require('mongodb');
+
+const userName = 'holowaychuk';
+const password = 'express';
+const hostname = 'mongodb.com';
+
+const url = `mongodb+srv://${userName}:${password}@${hostname}`;
+
+const client = new MongoClient(url);
+```
+
+ - We can then get a database and collection object
+ - Collection object allows insertion and querying of files
+ - Use `insertOne` function with JS object to put in database
+ - Use `find` on collection object to get documents. Without parameters it returns all documents. With parameters we can limit what we get
+ - MongoDB has a data service called Atlas that we use. Handles a lot so we don't have to. Yay!
+ - Steps for making MongoDB Atlas account:
+1. Create your account.
+2. Create a database cluster.
+3. Create your root database user credentials. Remember these for later use.
+4. ⚠ Set network access to your database to be available from anywhere.
+5. Copy the connection string and use the information in your code.
+6. Save the connection and credential information in your production and development environments as instructed above.
+
+ - We don't want to have our credentials chilling in our code because it could get hacked. That would not be bueno
+ - We'll have a configuration file with our credentials that we'll load into our production environment but never post to GitHub
+ - We can test our connection to the database just to make sure it's actually connected before we try to get/send data
+
+```js
+const config = require('./dbConfig.json');
+
+const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
+const client = new MongoClient(url);
+const db = client.db('rental');
+
+(async function testConnection() {
+  await client.connect();
+  await db.command({ ping: 1 });
+})().catch((ex) => {
+  console.log(`Unable to connect to database with ${url} because ${ex.message}`);
+  process.exit(1);
+});
+```
+
+Here's an example of writing to database and all that:
+
+```js
+const { MongoClient } = require('mongodb');
+const config = require('./dbConfig.json');
+
+async function main() {
+  // Connect to the database cluster
+  const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
+  const client = new MongoClient(url);
+  const db = client.db('rental');
+  const collection = db.collection('house');
+
+  // Test that you can connect to the database
+  (async function testConnection() {
+    await client.connect();
+    await db.command({ ping: 1 });
+  })().catch((ex) => {
+    console.log(`Unable to connect to database with ${url} because ${ex.message}`);
+    process.exit(1);
+  });
+
+  // Insert a document
+  const house = {
+    name: 'Beachfront views',
+    summary: 'From your bedroom to the beach, no shoes required',
+    property_type: 'Condo',
+    beds: 1,
+  };
+  await collection.insertOne(house);
+
+  // Query the documents
+  const query = { property_type: 'Condo', beds: { $lt: 2 } };
+  const options = {
+    sort: { score: -1 },
+    limit: 10,
+  };
+
+  const cursor = collection.find(query, options);
+  const rentals = await cursor.toArray();
+  rentals.forEach((i) => console.log(i));
+}
+
+main().catch(console.error);
+```
+
+
+
