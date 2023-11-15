@@ -163,10 +163,17 @@ document.addEventListener("DOMContentLoaded", async function () {
                 <p>Views: <span class="views">${motorcycle.views}</span></p>
             </a>
         `;
-        motorcycleCard.addEventListener('click', function(event) {
+        motorcycleCard.addEventListener('click', async function(event) {
             event.preventDefault();
-            motorcycle.views++;
-            updateViewsDisplay(motorcycleCard, motorcycle.views);
+            // Increment views in the database
+            await fetch(`/incrementViews/${motorcycle.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const views = await fetch(`/motorcycles/${motorcycle.id}/views`)
+            updateViewsDisplay(motorcycleCard, views);
     
             // Update URL with motorcycle ID
             const motorcycleId = motorcycle.id;
