@@ -115,3 +115,13 @@ For this deliverable I implemented MongoDB into my website and stored Motorcycle
  - MongoDB Atlas database created - I did it
  - Endpoints for data - My pertinent endpoints send information to MongoDB
  - Stores data in MongoDB - All the motorcycles and their information are stored in MongoDB
+
+
+## Login deliverable
+
+For this deliverable I added user login/authentication and tied that to their appointment svcheduling.
+
+- **User registration** - If the username is new it creates a new account in the database.
+- **Existing user** - If the user already exists it logs them in and gives them their delicious authentication cookie
+- **Use MongoDB to store credentials** - Stores both username and password.
+- **Restricts functionality** - You cannot schedule an appointment until you have logged in.
