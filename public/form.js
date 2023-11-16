@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async function()
             termsAgreed: document.getElementById('terms').checked
         };
         // Fetch endpoint to schedule the appointment
-        const schedulingResponse = await fetch('/api/appointments', {
+        const schedulingResponse = await fetch('/appointment', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

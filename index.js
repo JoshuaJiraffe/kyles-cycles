@@ -310,7 +310,7 @@ app.get('/motorcycles/:id/views', async (req, res) => {
 const appointments = [];
 
 // Endpoint for Scheduling Appointments (POST)
-app.post('/api/appointments', (req, res) => {
+app.post('/appointment', async (req, res) => {
     // Extract appointment data from the request body
     const { date, time, name, email, motorcycles, termsAgreed } = req.body;
 
@@ -318,22 +318,38 @@ app.post('/api/appointments', (req, res) => {
     if (!date || !time || !name || !email || !motorcycles || !termsAgreed) {
         return res.status(400).json({ error: 'Incomplete or invalid appointment data' });
     }
+    try
+    {
+        // Store the appointment data in the in-memory array
+        const appointment = {
+            id: generateUniqueId({length: 8, useLetters: false}),
+            date,
+            time,
+            name,
+            email,
+            motorcycles,
+            termsAgreed
+        };
 
-    // Store the appointment data in the in-memory array
-    const appointment = {
-        id: generateUniqueId({length: 8, useLetters: false}),
-        date,
-        time,
-        name,
-        email,
-        motorcycles,
-        termsAgreed
-    };
+        const createdAppointment = await DB.addAppointment(appointment);
 
-    appointments.push(appointment);
+        res.status(201).json(createdAppointment);
+    } 
+    catch (error) {
+        console.error('Error handling appointment request:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
-    // Respond with the created appointment details
-    res.status(201).json(appointment);
+// Get Appointments Endpoint
+app.get('/appointments', async (req, res) => {
+    try {
+        const appointments = await DB.getAppointments();
+        res.status(200).json(appointments);
+    } catch (error) {
+        console.error('Error getting appointments:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 // Return the application's default page if the path is unknown
