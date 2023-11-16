@@ -1,6 +1,18 @@
 import { Motorcycle } from './classes.js';
 import { getMotos } from './classes.js';
 
+(async () => {
+    const userName = localStorage.getItem('userName');
+    if (userName) {
+        document.querySelector("#admin").style.display = 'none';
+        document.querySelector("#logout").style.display= 'block';
+    } else {
+        document.querySelector("#admin").style.display = 'block';
+        document.querySelector("#logout").style.display= 'none';
+    }
+  })();
+  
+
 // // Creating the first motorcycle object
 // const firstMotorcycle = new Motorcycle(
 //     2009,

@@ -1,4 +1,6 @@
 const { MongoClient } = require('mongodb');
+const bcrypt = require('bcrypt');
+const uuid = require('uuid');
 const config = require('./dbConfig.json');
 
 const url = `mongodb+srv://${config.userName}:${config.password}@${config.hostname}`;
@@ -6,23 +8,7 @@ const client = new MongoClient(url);
 const db = client.db('kyles-cycles');
 const motorcyclesCollection = db.collection('motorcycles');
 const appointmentsCollection = db.collection('appointments');
-// const mongoose = require('mongoose')
-// const motorcycleSchema = new mongoose.Schema({
-//     year: Number,
-//     make: String,
-//     model: String,
-//     price: String,
-//     type: String,
-//     condition: String,
-//     mileage: String,
-//     engine: String,
-//     recentWorkDone: [String],
-//     views: { type: Number, default: 0 },
-//     description: String,
-//     name: String,
-// });
-
-// const MotorcycleModel = mongoose.model('motorcycles', motorcycleSchema);
+const userCollection = db.collection('users');
 
 (async function testConnection() {
   await client.connect();
@@ -31,6 +17,28 @@ const appointmentsCollection = db.collection('appointments');
   console.log(`Unable to connect to database with ${url} because ${ex.message}`);
   process.exit(1);
 });
+
+function getUser(userName) {
+    return userCollection.findOne({ username: userName });
+  }
+  
+  function getUserByToken(token) {
+    return userCollection.findOne({ token: token });
+  }
+  
+  async function createUser(userName, password) {
+    // Hash the password before we insert it into the database
+    const passwordHash = await bcrypt.hash(password, 10);
+  
+    const user = {
+      username: userName,
+      password: passwordHash,
+      token: uuid.v4(),
+    };
+    await userCollection.insertOne(user);
+  
+    return user;
+  }
 
 // Function to get all motorcycles from the database
 const getMotorcycles = async () => {
@@ -81,5 +89,8 @@ module.exports = {
     incrementViews,
     getViews,
     addAppointment,
-    getAppointments
+    getAppointments,
+    getUser,
+    getUserByToken,
+    createUser
 };

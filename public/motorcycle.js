@@ -1,6 +1,15 @@
 import { Motorcycle } from './classes.js';
 import { getMotos } from './classes.js';
 
+(async () => {
+    const userName = localStorage.getItem('userName');
+    if (userName) {
+        document.querySelector(".schedule-button").style.display = 'block';
+    } else {
+        document.querySelector(".schedule-button").style.display = 'none';
+    }
+  })();
+
 document.addEventListener('DOMContentLoaded', async function() {
     const params = new URLSearchParams(window.location.search);
     const motorcycleId = params.get("id");
