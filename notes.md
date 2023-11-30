@@ -1941,3 +1941,130 @@ app.listen(port, function () {
 
 
 
+# Week 12
+
+## WebSocket
+ - HTTP is based on client-server interactions. Websocket we use for client-client interactions
+ - Websocket doesn't require constant pinging or anything like that
+ - Websocket only handles two parties. If you have groups larger than that, the server acts as the intermediary and forwards all messages
+ - First we create a websocket object with the port it's going to use
+ - Then we can send messages using `send` and receive messages using `onmessage`
+ - Any connections made to the port will be automatically upgraded to a WebSocket connection if the request has a `connection: Upgrade` header
+
+```js
+const socket = new WebSocket('ws://localhost:9900');
+
+socket.onmessage = (event) => {
+  console.log('received: ', event.data);
+};
+
+socket.send('I am listening');
+```
+
+```js
+const { WebSocketServer } = require('ws');
+
+const wss = new WebSocketServer({ port: 9900 });
+
+wss.on('connection', (ws) => {
+  ws.on('message', (data) => {
+    const msg = String.fromCharCode(...data);
+    console.log('received: %s', msg);
+
+    ws.send(`I heard you say "${msg}"`);
+  });
+
+  ws.send('Hello webSocket');
+});
+```
+
+
+### Debugging:
+
+ - We use VS Code to debug the server and Chrome to debug the client
+ - use `npm init -y` to start npm in the project
+ - Then use `npm install ws` to be able to use WebSocket
+ - We debug in the server with f5 and in the client with f12
+
+
+### Chat:
+ - ws is nonsecure websocket
+ - wss is secure websockeet
+ - We want to be able to use both because yay inclusion
+ - Use this line `const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';` to connect to secure or nonsecure, depending on the http connection
+ - Here's how we establish the web service: `const { WebSocketServer } = require('ws');`
+
+When we create our WebSocket we do things a little differently than we did with the simple connection example. Instead of letting the WebSocketServer control both the HTTP connection and the upgrading to WebSocket, we want to use the HTTP connection that Express is providing and handle the upgrade to WebSocket ourselves. This is done by specifying the `noServer` option when creating the WebSocketServer and then handling the `upgrade` notification that occurs when a client requests the upgrade of the protocol from HTTP to WebSocket.
+
+```js
+// Create a websocket object
+const wss = new WebSocketServer({ noServer: true });
+
+// Handle the protocol upgrade from HTTP to WebSocket
+server.on('upgrade', (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, function done(ws) {
+    wss.emit('connection', ws, request);
+  });
+});
+```
+
+ - WebSocket server can use `connection` `message` and `close` events to forward messages between parties
+ - That's how we make messages go to everyone when everyone is more than two
+
+```js
+// Keep track of all the connections so we can forward messages
+let connections = [];
+
+wss.on('connection', (ws) => {
+  const connection = { id: connections.length + 1, alive: true, ws: ws };
+  connections.push(connection);
+
+  // Forward messages to everyone except the sender
+  ws.on('message', function message(data) {
+    connections.forEach((c) => {
+      if (c.id !== connection.id) {
+        c.ws.send(data);
+      }
+    });
+  });
+
+  // Remove the closed connection so we don't try to forward anymore
+  ws.on('close', () => {
+    connections.findIndex((o, i) => {
+      if (o.id === connection.id) {
+        connections.splice(i, 1);
+        return true;
+      }
+    });
+  });
+});
+```
+
+ - WebSocket connections close if no messages are sent. To keep them alive we use a `ping` message to ask the client if he's there and a `pong` to confirm that he is
+
+```js
+setInterval(() => {
+  connections.forEach((c) => {
+    // Kill any connection that didn't respond to the ping last time
+    if (!c.alive) {
+      c.ws.terminate();
+    } else {
+      c.alive = false;
+      c.ws.ping();
+    }
+  });
+}, 10000);
+```
+
+In our `connection` handler we listen for the `pong` response and mark the connection as alive.
+
+```js
+// Respond to pong messages by marking the connection alive
+ws.on('pong', () => {
+  connection.alive = true;
+});
+```
+
+
+
+
