@@ -2066,5 +2066,465 @@ ws.on('pong', () => {
 ```
 
 
+# Week 13
+
+## Web Frameworks:
+ - Web Frameworks provide tools to complete common application tasks like modularizing code, creating single page applications, simplifying reactivity, and supporting diverse hardware devices
+ - Some create new file formats that combine HTML, CSS, JS into one file
+
+##### Examples of some frameworks:
+ - Vue combines HTML, CSS, and JS all in one file. HTML is represented by a `template` element
+ - Svelte also combines them all, but it requires a transpiler to generate the browser-ready code
+ - React combines HTML and JavaScript into a JSX file. CSS is in different file that is then imported into the JSX file
+
+
+**JSX**
+
+```jsx
+import 'hello.css';
+
+const Hello = () => {
+  let name = 'world';
+
+  return <p>Hello {name}</p>;
+};
+```
+
+**CSS**
+
+```css
+p {
+  color: green;
+}
+```
+
+
+An Angular Component defines which files should be combined together
+
+**JS**
+
+```js
+@Component({
+  selector: 'app-hello-world',
+  templateUrl: './hello-world.component.html',
+  styleUrls: ['./hello-world.component.css'],
+})
+export class HelloWorldComponent {
+  name: string;
+  constructor() {
+    this.name = 'world';
+  }
+}
+```
+
+
+
+## React
+
+ - React uses a virtual DOM that just loads different parts of your HTML
+ - The name comes from the goal to make a web page that's reactive and automatically updates based on user interactions
+ - It was created for Facebook in 2011
+ - React abstracts HTML into JSX and turns the JSX into JS and HTML using the preprocessor babel
+ - We use `<script type="text/babel">` cause yeah
+ - The `React.createElement` function will then generate DOM elements and monitor the data they represent for changes. When a change is discovered, React will trigger dependent changes.
+ - In order to get things on our page using react, we create a root and tell the root to render. Like so:
+
+```js
+    <script type="text/babel">
+        const root = ReactDOM.createRoot(
+            document.getElementById('mydiv')
+        );
+        const element = (
+          <div>
+          <h1>Hello, world</h1>
+          <h2>Goodbye, world</h2>
+          </div>
+        )
+        root.render(element);    
+    </script>
+```
+
+ - Elements are the smallest building blocks of a react page
+ - Applications built with react generally have a single root DOM node
+ - We can pass in scripts to the root.render() as well
+ - React only changes the parts of the DOM it needs to. It'll leave the rest the same
+
+### Components
+
+ - Components let you split the UI into independent, reusable pieces. They're like JavaScript functions
+ - Components take arbitrary inputs called props and return React elements to show what we want in the DOM. Props stand for properties
+Example:
+```jsx
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+```
+
+Here's an example of how we would pass into a component:
+```jsx
+  <script type="text/babel">  
+  function Welcome(props) {
+    return <h1>Hello, {props.name}</h1>;
+  }
+
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  const element = <Welcome name="Sara" />;
+  root.render(element);
+</script>
+```
+
+Components can also contain other components:
+```jsx
+  <script type="text/babel">  
+  function Welcome(props) {
+    return <h1>Hello, {props.name}</h1>;
+  }
+  function App() {
+    return (
+      <div>
+        <Welcome name="Sara" />
+        <Welcome name="Cahal" />
+        <Welcome name="Edite" />
+      </div>
+    );
+  }
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(<App />);
+  </script>
+  ```
+
+These two are equivalent. Important to know how to use classes:
+```jsx
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+```
+```jsx
+class Welcome extends React.Component {
+  render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+```
+
+### Events:
+ - React events are named using camelCase and you pass in a funciton to the event handler, not a string
+```html
+<button onClick={activateLasers}>
+  Activate Lasers
+</button>
+```
+
+ - In the function, you must call preventDefault(); on the event
+ - To maintain state between events, we must create an object
+ - You don't need semicolons after JSX elements, like when you're calling a component in another component
+ - When you do return, you need to put the open paren right after it, no line break
+
+Here's some example
+```jxs
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">  
+    function Form() {
+      function handleSubmit(e) {
+        e.preventDefault();
+        alert('You clicked submit.');
+      }
+
+      return (
+        <form onSubmit={handleSubmit}>
+          <button type="submit">Submit</button>
+        </form>
+      );
+    }
+    class Toggle extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {isToggleOn: true};
+
+        // This binding is necessary to make `this` work in the callback
+        this.handleClick = this.handleClick.bind(this);
+      }
+
+      handleClick() {
+        this.setState(prevState => ({
+          isToggleOn: !prevState.isToggleOn
+        }));
+      }
+
+      render() {
+        return (
+          <button onClick={this.handleClick}>
+            {this.state.isToggleOn ? 'ON' : 'OFF'}
+          </button>
+        );
+      }
+    }
+    function Both(props) 
+    {
+      return (
+        <div>
+          <Form />
+          <Toggle />
+        </div>
+      );
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<Both />);
+
+    </script>
+  </body>
+</html>
+```
+
+### Conditional Rendering
+ - We can return different things to render in our components, just like normal JavaScript
+
+### Lists
+ - We display lists in react using the map function
+ - Here's the real important part:
+```html
+    function Numbers() { 
+      const numbers = [1, 2, 3, 4, 5];
+      const listItems = numbers.map((number) =>
+        <li>{number}</li>
+      );
+      return(<ul>{listItems}</ul>)
+    }
+```
+
+Here's it all:
+```html
+<html>
+  <head>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel"> 
+    function Numbers() { 
+      const numbers = [1, 2, 3, 4, 5];
+      const listItems = numbers.map((number) =>
+        <li>{number}</li>
+      );
+      return(<ul>{listItems}</ul>)
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root')); 
+    root.render(<Numbers/>);
+    </script>
+  </body>
+</html>
+```
+
+### Forms:
+ - HTML elements maintain their own state and update it based on user input
+ - In React, mutable state is kept in the state property of components, and it's only updated when setState() is called
+ - An input form element whose value is controlled by React is called a controlled component
+
+```html
+function NameForm() {
+  const [state, setState] = React.useState('');
+
+  function handleChange(event) {
+    setState(event.target.value);
+  }
+
+  function handleSubmit(event) {
+    alert('A name was submitted: ' + state);
+    event.preventDefault();
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input type="text" value={state} onChange={handleChange} />
+      </label>
+      <input type="submit" value="Submit" />
+    </form>
+  );
+}
+```
+
+### React-APIs
+ - We can also use fetch calls with React. Super easy, barely an inconvenience
+ - event.target will give use the element that triggered the event to happen
+ - The state, as in `this.state` is an object that can hold much information. It's like a dictionary. You can have a value, you can have a motorcycle id, whatever you want
+ - You can have stuff after render before the return statement
+ - This is how we can have some cool calls to make lists get smaller as you type. Like so
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">  
+    class CityForm extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {value: '', cities:[{"city":"Provo"},{"city":"Lindon"}]};
+    
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+      }
+    
+      handleChange(event) {
+        alert('A name was changed: ' + event.target.value);
+        this.setState({value: event.target.value});
+        var url = "https://csonline.fhtl.org?q=" + event.target.value;
+        console.log("URL " + url);
+        fetch(url)
+          .then((data) => {
+            return (data.json());
+          })
+          .then((citylist) => {
+            console.log("CityList");
+            console.log(citylist);
+            this.setState({cities:citylist})
+            console.log(this.state.cities);
+          });
+      }
+    
+      handleSubmit(event) {
+        alert('A name was submitted: ' + this.state.value);
+        event.preventDefault();
+      }
+      
+    
+      render() {
+        const listItems = this.state.cities.map((cityname) => 
+          <li key={cityname.city}>{cityname.city}</li>
+        );
+        return (
+            <div>
+            <form onSubmit={this.handleSubmit} onKeyUp={this.handleChange}>
+            <label>
+              Name:
+              <input type="text" value={this.state.value} onChange={this.handleChange} />
+            </label>
+            <input type="submit" value="Submit" />
+            </form>
+            <ul>{listItems}</ul>
+            </div>
+        );
+      }
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<CityForm />);
+    </script>
+  </body>
+</html>
+```
+
+
+### ToDo List
+ - Hey I need one of those
+ - Here's some cool code for making a todo list if I want to remember it
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">  
+    class Todo extends React.Component {
+      constructor(props) {
+        super(props);
+         this.state = {
+            formtask: '', 
+            tasks:[{"task":"Wash Clothes","completed":false},{"task":"Sweep Floor","completed":true}]
+        };
+    
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleToggle = this.handleToggle.bind(this);
+        this.handleFilter = this.handleFilter.bind(this);
+      }
+    
+      handleChange(event) {
+        this.setState({formtask: event.target.value});
+      }
+    
+      handleSubmit(event) {
+        // alert('A task was submitted: ' + this.state.formtask);
+        this.setState({tasks:[...this.state.tasks, 
+            {"task":this.state.formtask,"completed":false}]
+        });
+        this.setState({formtask:""});
+        event.preventDefault();
+      }
+
+      handleToggle(event, index)  {
+        const element = event.target;
+        var target = this.state.tasks[index];
+        if(target.completed) {
+            target.completed = false;
+        } else {
+            target.completed = true;
+        }
+        console.log(this.state.tasks);
+        element.classList.toggle("strike");
+      }
+    
+      handleFilter() {
+        let filtered = this.state.tasks.filter(task => {
+          return !task.completed;
+        });
+        this.setState({tasks:filtered});
+        event.preventDefault();
+      }    
+      
+      render() {
+        const listItems = this.state.tasks.map((thistask, index) => 
+          <li className={thistask.completed ? "strike" : "todo"} 
+            onClick={event => this.handleToggle(event, index)}
+            key={thistask.task}>{thistask.task}</li>
+        );
+        return (
+            <div>
+              <h1> Todo List </h1>
+              <form onSubmit={this.handleSubmit} onKeyUp={this.handleChange}>
+                <label>
+                  Name:
+                  <input type="text" value={this.state.formtask} onChange={this.handleChange} />
+                </label>
+                <input type="submit" value="Submit" />
+              </form>
+              <ul>{listItems}</ul>
+              <button onClick={this.handleFilter}>Clear Completed</button>
+            </div>
+        );
+      }
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<Todo />);
+    </script>
+  </body>
+</html>
+```
+
+### More Components
+
+
 
 
