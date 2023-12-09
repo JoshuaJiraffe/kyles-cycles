@@ -2525,6 +2525,94 @@ function NameForm() {
 
 ### More Components
 
+ - Primary purpose of component is to create user interface using render()
+ - Whatever render() returns is put into HTML
+ - Components get passed in properties. The name of the property is how you then call whatever it is
+ - We use `React.useState` to have the state of componenets. It returns a variable that has the state and a function to update the state
+ - Class style components are also used, but it's being moved away from. With class style, properties are loaded on the constructor and the state is set using `setState` on the component object
+
+**Function Style:**
+```jsx
+const Clicker = () => {
+  const [clicked, updateClicked] = React.useState(false);
+
+  const onClicked = (e) => {
+    updateClicked(!clicked);
+  };
+
+  return <p onClick={(e) => onClicked(e)}>clicked: {`${clicked}`}</p>;
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Clicker />);
+```
+
+**Class Style:**
+```jsx
+class Clicker extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      clicked: false,
+    };
+  }
+  onClicked() {
+    this.setState({
+      clicked: !this.state.clicked,
+    });
+  }
+  render() {
+    return <p onClick={(e) => this.onClicked(e)}>clicked: {`${this.state.clicked}`}</p>;
+  }
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Clicker />);
+```
+
+
+
+# Week 14
+
+
+## Toolchains:
+ - We have many tools to do common functional parts of applications. Here are some:
+
+- **Code repository** - Stores code in a shared, versioned, location.
+- **Linter** - Removes, or warns, of non-idiomatic code usage.
+- **Prettier** - Formats code according to a shared standard.
+- **Transpiler** - Compiles code into a different format. For example, from JSX to JavaScript, TypeScript to JavaScript, or SCSS to CSS.
+- **Polyfill** - Generates backward compatible code for supporting old browser versions that do not support the latest standards.
+- **Bundler** - Packages code into bundles for delivery to the browser. This enables compatibility (for example with ES6 module support), or performance (with lazy loading).
+- **Minifier** - Removes whitespace and renames variables in order to make code smaller and more efficient to deploy.
+- **Testing** - Automated tests at multiple levels to ensure correctness.
+- **Deployment** - Automated packaging and delivery of code from the development environment to the production environment.
+
+ - We have much Toolchain usage in our project
+
+
+## React Tic-Tac-Toe
+ - Putting `default` in a function tells other files that use this fail that it's the main function of the file
+ - React components can only return a single JSX element. To return multiple we wrap them in fragments `<>` and `</>`
+ - We can put divs and other things. Basically as much HTML as we want, as long as we put it inside our fragments and make sure the return has parenthesees
+ - If you import an entire file you can run the default function by just calling the file name like `<App/>`
+ - We put the props we pass in inside parenthesees and squigles: `function Square({ value }) {}`
+ - Curly braces are how we will access that value in the future too
+ - React DevTools can be used to check the props and state of React components
+ - Instead of asking for info from children, try to use a parent's state to keep track of things
+ - To collect data from multiple children, or to have two child components communicate with each other, declare the shared state in their parent component instead. The parent component can pass that state back down to the children via props. This keeps the child components in sync with each other and with their parent.
+ - JavaScript supports closures - inner functions can access variables and functions in an outer function
+ - Every time we call a function that edits some element, it rerenders that element in the DOM
+ - It's convention to name onSomething and handleSomething functions for events
+ - Immutability in data is important so you can easily redo and you haven't lost the data
+ - We use `map` function to transfer from our JavaScript array into an array of React elements
+ - Every list item needs a key to separate it from its siblings
+ - React uses keys to know which items to update. That way it only updates the changed children when it's running a function in the parent's scope
+ - Keys don't need to be globally unique, just among sibling components
+
+
+## React Reactivity
+ - 
 
 
 
