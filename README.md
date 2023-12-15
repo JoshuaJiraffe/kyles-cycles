@@ -136,3 +136,11 @@ For this deliverable I used websocket to update views of the bikes in realtime.
 - **WebSocket data displayed** - All motoryclce views update whenever someone goes to the page. Yay
 
 
+## React deliverable
+
+For this deliverable I converted the application over to use React
+
+- **Bundled and transpiled** - done!
+- **Components** - Login, motorcycle list, motorcycle card, scheduler, motorcycle details are all components.
+- **Router** - Routing between motorcycle list and motorcycle detail components
+- **Hooks** - I used hooks to handle form submission and motorcycle detail data
