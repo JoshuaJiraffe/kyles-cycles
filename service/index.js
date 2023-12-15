@@ -4,6 +4,7 @@ const generateUniqueId = require('generate-unique-id');
 const DB = require('./database.js');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
+const { peerProxy } = require('./peerProxy.js');
 
 const authCookieName = 'token';
 
@@ -437,7 +438,8 @@ function setAuthCookie(res, authToken) {
     });
   }
   
-app.listen(port, () => {
+const httpService = app.listen(port, () => {
 console.log(`Listening on port ${port}`);
 });
 
+peerProxy(httpService);
