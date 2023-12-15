@@ -25,13 +25,13 @@ export default function App() {
                             <div className="collapse navbar-collapse" id="navbarNav">
                                 <ul className="navbar-nav">
                                     <li className="nav-item">
-                                        <NavLink className="nav-link active" to="home" >Home</NavLink>
+                                        <NavLink className="nav-link" id="home-link" to="home" >Home</NavLink>
                                     </li>
                                     <li className="nav-item">
-                                        <NavLink className="nav-link" to="about">About</NavLink>
+                                        <NavLink className="nav-link" id="about-link" to="about">About</NavLink>
                                     </li>
                                     <li className="nav-item">
-                                        <NavLink className="nav-link" to="contact">Contact us</NavLink>
+                                        <NavLink className="nav-link" id="contact-link" to="contact">Contact us</NavLink>
                                     </li>
                                 </ul>
                             </div>
