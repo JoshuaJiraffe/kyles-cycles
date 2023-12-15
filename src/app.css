@@ -1,0 +1,221 @@
+/* Reset some default styles */
+body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, figcaption, table, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+/* Reset styles (same as before) */
+
+.body {
+    font-family: Georgia, serif; /* Use Georgia font */
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+header {
+    flex: 0;
+}
+main {
+    flex: 1;
+}
+footer{
+    flex: 0;
+}
+
+.header {
+    background: linear-gradient(to bottom, #660066, #4b004b); /* Purple gradient */
+    color: #ffffff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.logo {
+    font-size: 36px;
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); /* Text shadow for visibility */
+    margin-right: 10px;
+}
+
+nav.menu {
+    background-color: #660066;
+    color: #ffffff;
+    padding: 10px;
+    text-align: center;
+    margin-right: 100px;
+}
+
+nav.menu a {
+    color: #ffffff;
+    text-decoration: none;
+    margin: 0 20px;
+}
+/* Customize Bootstrap Navbar styles */
+.navbar {
+    background: linear-gradient(to bottom, #660066, #4b004b); /* Purple gradient */
+    border: none; /* Remove border */
+}
+
+/* Customize Bootstrap Navbar toggle button styles */
+.navbar-toggler-icon {
+    background-color: #ffffff;
+}
+
+/* Customize Bootstrap Navbar link styles */
+.navbar-nav .nav-item .nav-link {
+    color: #7d7d7d; /* Set menu text color to light gray */
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+.navbar-nav .nav-item .nav-link:hover {
+    color: #a1a1a1;
+}
+
+/* Style the active menu link */
+.navbar-nav .nav-item .nav-link.active {
+    color: #ffffff; /* Set active menu text color to white */
+}
+
+#admin,
+#logout button {
+    background-color: transparent;
+    border: none;
+    color: #7d7d7d;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 20px;
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+#admin:hover,
+#logout button:hover {
+    color: #a1a1a1;
+}
+
+
+.main-content {
+    padding: 20px;
+}
+.motorcycle-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    justify-content: center;
+}
+
+.motorcycle-card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+.motorcycle-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.motorcycle-card h4 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.motorcycle-card p.price {
+    color: #0c6ac9;
+    font-weight: bold;
+}
+/* Add this CSS to your stylesheets */
+a {
+    text-decoration: none; /* Remove underline */
+    color: #333; /* Set the desired text color */
+}
+
+/* Style links on hover if needed */
+a:hover {
+    color: #555; /* Change color on hover */
+}
+
+
+@media (max-width: 768px) {
+    .motorcycle-list {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    #moto-gallery{
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .motorcycle-list {
+        grid-template-columns: 1fr;
+    }
+}
+/* .motorcycle-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+
+.custom-table td {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1); */
+/* } */
+
+/* .main-content .motorcycle-list td {
+    background-color: #ffffff;
+    margin: 50px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+} */
+/* .motorcycle-list tr{
+    margin: 10px;
+    padding: 20px;
+} */
+
+.footer {
+    background: linear-gradient(to bottom, #4b004b, #660066); /* Purple gradient */
+    color: #ffffff;
+    text-align: center;
+    padding: 15px 0;
+}
+
+.review {
+    font-style: italic;
+    color: #666;
+}
+.reviewer {
+    font-weight: bold;
+}
+
+#company-description {
+    margin: 20px 10px;
+}
+
+@media (orientation: portrait) {
+    #admin {
+        display: none;
+    }
+}
+
+@media (max-height: 600px) {
+
+}
+
