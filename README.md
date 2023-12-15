@@ -141,6 +141,6 @@ For this deliverable I used websocket to update views of the bikes in realtime.
 For this deliverable I converted the application over to use React
 
 - **Bundled and transpiled** - done!
-- **Components** - Login, motorcycle list, motorcycle card, scheduler, motorcycle details are all components.
-- **Router** - Routing between motorcycle list and motorcycle detail components
+- **Components** - Login, main page, motorcycle page, schedule page, about page, contact page, and form complete page are all components.
+- **Router** - Routing between all pages implemented
 - **Hooks** - I used hooks to handle form submission and motorcycle detail data
