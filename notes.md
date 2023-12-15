@@ -1941,3 +1941,1162 @@ app.listen(port, function () {
 
 
 
+# Week 12
+
+## WebSocket
+ - HTTP is based on client-server interactions. Websocket we use for client-client interactions
+ - Websocket doesn't require constant pinging or anything like that
+ - Websocket only handles two parties. If you have groups larger than that, the server acts as the intermediary and forwards all messages
+ - First we create a websocket object with the port it's going to use
+ - Then we can send messages using `send` and receive messages using `onmessage`
+ - Any connections made to the port will be automatically upgraded to a WebSocket connection if the request has a `connection: Upgrade` header
+
+```js
+const socket = new WebSocket('ws://localhost:9900');
+
+socket.onmessage = (event) => {
+  console.log('received: ', event.data);
+};
+
+socket.send('I am listening');
+```
+
+```js
+const { WebSocketServer } = require('ws');
+
+const wss = new WebSocketServer({ port: 9900 });
+
+wss.on('connection', (ws) => {
+  ws.on('message', (data) => {
+    const msg = String.fromCharCode(...data);
+    console.log('received: %s', msg);
+
+    ws.send(`I heard you say "${msg}"`);
+  });
+
+  ws.send('Hello webSocket');
+});
+```
+
+
+### Debugging:
+
+ - We use VS Code to debug the server and Chrome to debug the client
+ - use `npm init -y` to start npm in the project
+ - Then use `npm install ws` to be able to use WebSocket
+ - We debug in the server with f5 and in the client with f12
+
+
+### Chat:
+ - ws is nonsecure websocket
+ - wss is secure websockeet
+ - We want to be able to use both because yay inclusion
+ - Use this line `const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';` to connect to secure or nonsecure, depending on the http connection
+ - Here's how we establish the web service: `const { WebSocketServer } = require('ws');`
+
+When we create our WebSocket we do things a little differently than we did with the simple connection example. Instead of letting the WebSocketServer control both the HTTP connection and the upgrading to WebSocket, we want to use the HTTP connection that Express is providing and handle the upgrade to WebSocket ourselves. This is done by specifying the `noServer` option when creating the WebSocketServer and then handling the `upgrade` notification that occurs when a client requests the upgrade of the protocol from HTTP to WebSocket.
+
+```js
+// Create a websocket object
+const wss = new WebSocketServer({ noServer: true });
+
+// Handle the protocol upgrade from HTTP to WebSocket
+server.on('upgrade', (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, function done(ws) {
+    wss.emit('connection', ws, request);
+  });
+});
+```
+
+ - WebSocket server can use `connection` `message` and `close` events to forward messages between parties
+ - That's how we make messages go to everyone when everyone is more than two
+
+```js
+// Keep track of all the connections so we can forward messages
+let connections = [];
+
+wss.on('connection', (ws) => {
+  const connection = { id: connections.length + 1, alive: true, ws: ws };
+  connections.push(connection);
+
+  // Forward messages to everyone except the sender
+  ws.on('message', function message(data) {
+    connections.forEach((c) => {
+      if (c.id !== connection.id) {
+        c.ws.send(data);
+      }
+    });
+  });
+
+  // Remove the closed connection so we don't try to forward anymore
+  ws.on('close', () => {
+    connections.findIndex((o, i) => {
+      if (o.id === connection.id) {
+        connections.splice(i, 1);
+        return true;
+      }
+    });
+  });
+});
+```
+
+ - WebSocket connections close if no messages are sent. To keep them alive we use a `ping` message to ask the client if he's there and a `pong` to confirm that he is
+
+```js
+setInterval(() => {
+  connections.forEach((c) => {
+    // Kill any connection that didn't respond to the ping last time
+    if (!c.alive) {
+      c.ws.terminate();
+    } else {
+      c.alive = false;
+      c.ws.ping();
+    }
+  });
+}, 10000);
+```
+
+In our `connection` handler we listen for the `pong` response and mark the connection as alive.
+
+```js
+// Respond to pong messages by marking the connection alive
+ws.on('pong', () => {
+  connection.alive = true;
+});
+```
+
+
+# Week 13
+
+## Web Frameworks:
+ - Web Frameworks provide tools to complete common application tasks like modularizing code, creating single page applications, simplifying reactivity, and supporting diverse hardware devices
+ - Some create new file formats that combine HTML, CSS, JS into one file
+
+##### Examples of some frameworks:
+ - Vue combines HTML, CSS, and JS all in one file. HTML is represented by a `template` element
+ - Svelte also combines them all, but it requires a transpiler to generate the browser-ready code
+ - React combines HTML and JavaScript into a JSX file. CSS is in different file that is then imported into the JSX file
+
+
+**JSX**
+
+```jsx
+import 'hello.css';
+
+const Hello = () => {
+  let name = 'world';
+
+  return <p>Hello {name}</p>;
+};
+```
+
+**CSS**
+
+```css
+p {
+  color: green;
+}
+```
+
+
+An Angular Component defines which files should be combined together
+
+**JS**
+
+```js
+@Component({
+  selector: 'app-hello-world',
+  templateUrl: './hello-world.component.html',
+  styleUrls: ['./hello-world.component.css'],
+})
+export class HelloWorldComponent {
+  name: string;
+  constructor() {
+    this.name = 'world';
+  }
+}
+```
+
+
+
+## React
+
+ - React uses a virtual DOM that just loads different parts of your HTML
+ - The name comes from the goal to make a web page that's reactive and automatically updates based on user interactions
+ - It was created for Facebook in 2011
+ - React abstracts HTML into JSX and turns the JSX into JS and HTML using the preprocessor babel
+ - We use `<script type="text/babel">` cause yeah
+ - The `React.createElement` function will then generate DOM elements and monitor the data they represent for changes. When a change is discovered, React will trigger dependent changes.
+ - In order to get things on our page using react, we create a root and tell the root to render. Like so:
+
+```js
+    <script type="text/babel">
+        const root = ReactDOM.createRoot(
+            document.getElementById('mydiv')
+        );
+        const element = (
+          <div>
+          <h1>Hello, world</h1>
+          <h2>Goodbye, world</h2>
+          </div>
+        )
+        root.render(element);    
+    </script>
+```
+
+ - Elements are the smallest building blocks of a react page
+ - Applications built with react generally have a single root DOM node
+ - We can pass in scripts to the root.render() as well
+ - React only changes the parts of the DOM it needs to. It'll leave the rest the same
+
+### Components
+
+ - Components let you split the UI into independent, reusable pieces. They're like JavaScript functions
+ - Components take arbitrary inputs called props and return React elements to show what we want in the DOM. Props stand for properties
+Example:
+```jsx
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+```
+
+Here's an example of how we would pass into a component:
+```jsx
+  <script type="text/babel">  
+  function Welcome(props) {
+    return <h1>Hello, {props.name}</h1>;
+  }
+
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  const element = <Welcome name="Sara" />;
+  root.render(element);
+</script>
+```
+
+Components can also contain other components:
+```jsx
+  <script type="text/babel">  
+  function Welcome(props) {
+    return <h1>Hello, {props.name}</h1>;
+  }
+  function App() {
+    return (
+      <div>
+        <Welcome name="Sara" />
+        <Welcome name="Cahal" />
+        <Welcome name="Edite" />
+      </div>
+    );
+  }
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(<App />);
+  </script>
+  ```
+
+These two are equivalent. Important to know how to use classes:
+```jsx
+function Welcome(props) {
+  return <h1>Hello, {props.name}</h1>;
+}
+```
+```jsx
+class Welcome extends React.Component {
+  render() {
+    return <h1>Hello, {this.props.name}</h1>;
+  }
+}
+```
+
+### Events:
+ - React events are named using camelCase and you pass in a funciton to the event handler, not a string
+```html
+<button onClick={activateLasers}>
+  Activate Lasers
+</button>
+```
+
+ - In the function, you must call preventDefault(); on the event
+ - To maintain state between events, we must create an object
+ - You don't need semicolons after JSX elements, like when you're calling a component in another component
+ - When you do return, you need to put the open paren right after it, no line break
+
+Here's some example
+```jxs
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">  
+    function Form() {
+      function handleSubmit(e) {
+        e.preventDefault();
+        alert('You clicked submit.');
+      }
+
+      return (
+        <form onSubmit={handleSubmit}>
+          <button type="submit">Submit</button>
+        </form>
+      );
+    }
+    class Toggle extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {isToggleOn: true};
+
+        // This binding is necessary to make `this` work in the callback
+        this.handleClick = this.handleClick.bind(this);
+      }
+
+      handleClick() {
+        this.setState(prevState => ({
+          isToggleOn: !prevState.isToggleOn
+        }));
+      }
+
+      render() {
+        return (
+          <button onClick={this.handleClick}>
+            {this.state.isToggleOn ? 'ON' : 'OFF'}
+          </button>
+        );
+      }
+    }
+    function Both(props) 
+    {
+      return (
+        <div>
+          <Form />
+          <Toggle />
+        </div>
+      );
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<Both />);
+
+    </script>
+  </body>
+</html>
+```
+
+### Conditional Rendering
+ - We can return different things to render in our components, just like normal JavaScript
+
+### Lists
+ - We display lists in react using the map function
+ - Here's the real important part:
+```html
+    function Numbers() { 
+      const numbers = [1, 2, 3, 4, 5];
+      const listItems = numbers.map((number) =>
+        <li>{number}</li>
+      );
+      return(<ul>{listItems}</ul>)
+    }
+```
+
+Here's it all:
+```html
+<html>
+  <head>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel"> 
+    function Numbers() { 
+      const numbers = [1, 2, 3, 4, 5];
+      const listItems = numbers.map((number) =>
+        <li>{number}</li>
+      );
+      return(<ul>{listItems}</ul>)
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root')); 
+    root.render(<Numbers/>);
+    </script>
+  </body>
+</html>
+```
+
+### Forms:
+ - HTML elements maintain their own state and update it based on user input
+ - In React, mutable state is kept in the state property of components, and it's only updated when setState() is called
+ - An input form element whose value is controlled by React is called a controlled component
+
+```html
+function NameForm() {
+  const [state, setState] = React.useState('');
+
+  function handleChange(event) {
+    setState(event.target.value);
+  }
+
+  function handleSubmit(event) {
+    alert('A name was submitted: ' + state);
+    event.preventDefault();
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input type="text" value={state} onChange={handleChange} />
+      </label>
+      <input type="submit" value="Submit" />
+    </form>
+  );
+}
+```
+
+### React-APIs
+ - We can also use fetch calls with React. Super easy, barely an inconvenience
+ - event.target will give use the element that triggered the event to happen
+ - The state, as in `this.state` is an object that can hold much information. It's like a dictionary. You can have a value, you can have a motorcycle id, whatever you want
+ - You can have stuff after render before the return statement
+ - This is how we can have some cool calls to make lists get smaller as you type. Like so
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">  
+    class CityForm extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {value: '', cities:[{"city":"Provo"},{"city":"Lindon"}]};
+    
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+      }
+    
+      handleChange(event) {
+        alert('A name was changed: ' + event.target.value);
+        this.setState({value: event.target.value});
+        var url = "https://csonline.fhtl.org?q=" + event.target.value;
+        console.log("URL " + url);
+        fetch(url)
+          .then((data) => {
+            return (data.json());
+          })
+          .then((citylist) => {
+            console.log("CityList");
+            console.log(citylist);
+            this.setState({cities:citylist})
+            console.log(this.state.cities);
+          });
+      }
+    
+      handleSubmit(event) {
+        alert('A name was submitted: ' + this.state.value);
+        event.preventDefault();
+      }
+      
+    
+      render() {
+        const listItems = this.state.cities.map((cityname) => 
+          <li key={cityname.city}>{cityname.city}</li>
+        );
+        return (
+            <div>
+            <form onSubmit={this.handleSubmit} onKeyUp={this.handleChange}>
+            <label>
+              Name:
+              <input type="text" value={this.state.value} onChange={this.handleChange} />
+            </label>
+            <input type="submit" value="Submit" />
+            </form>
+            <ul>{listItems}</ul>
+            </div>
+        );
+      }
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<CityForm />);
+    </script>
+  </body>
+</html>
+```
+
+
+### ToDo List
+ - Hey I need one of those
+ - Here's some cool code for making a todo list if I want to remember it
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">  
+    class Todo extends React.Component {
+      constructor(props) {
+        super(props);
+         this.state = {
+            formtask: '', 
+            tasks:[{"task":"Wash Clothes","completed":false},{"task":"Sweep Floor","completed":true}]
+        };
+    
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleToggle = this.handleToggle.bind(this);
+        this.handleFilter = this.handleFilter.bind(this);
+      }
+    
+      handleChange(event) {
+        this.setState({formtask: event.target.value});
+      }
+    
+      handleSubmit(event) {
+        // alert('A task was submitted: ' + this.state.formtask);
+        this.setState({tasks:[...this.state.tasks, 
+            {"task":this.state.formtask,"completed":false}]
+        });
+        this.setState({formtask:""});
+        event.preventDefault();
+      }
+
+      handleToggle(event, index)  {
+        const element = event.target;
+        var target = this.state.tasks[index];
+        if(target.completed) {
+            target.completed = false;
+        } else {
+            target.completed = true;
+        }
+        console.log(this.state.tasks);
+        element.classList.toggle("strike");
+      }
+    
+      handleFilter() {
+        let filtered = this.state.tasks.filter(task => {
+          return !task.completed;
+        });
+        this.setState({tasks:filtered});
+        event.preventDefault();
+      }    
+      
+      render() {
+        const listItems = this.state.tasks.map((thistask, index) => 
+          <li className={thistask.completed ? "strike" : "todo"} 
+            onClick={event => this.handleToggle(event, index)}
+            key={thistask.task}>{thistask.task}</li>
+        );
+        return (
+            <div>
+              <h1> Todo List </h1>
+              <form onSubmit={this.handleSubmit} onKeyUp={this.handleChange}>
+                <label>
+                  Name:
+                  <input type="text" value={this.state.formtask} onChange={this.handleChange} />
+                </label>
+                <input type="submit" value="Submit" />
+              </form>
+              <ul>{listItems}</ul>
+              <button onClick={this.handleFilter}>Clear Completed</button>
+            </div>
+        );
+      }
+    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<Todo />);
+    </script>
+  </body>
+</html>
+```
+
+### More Components
+
+ - Primary purpose of component is to create user interface using render()
+ - Whatever render() returns is put into HTML
+ - Components get passed in properties. The name of the property is how you then call whatever it is
+ - We use `React.useState` to have the state of componenets. It returns a variable that has the state and a function to update the state
+ - Class style components are also used, but it's being moved away from. With class style, properties are loaded on the constructor and the state is set using `setState` on the component object
+
+**Function Style:**
+```jsx
+const Clicker = () => {
+  const [clicked, updateClicked] = React.useState(false);
+
+  const onClicked = (e) => {
+    updateClicked(!clicked);
+  };
+
+  return <p onClick={(e) => onClicked(e)}>clicked: {`${clicked}`}</p>;
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Clicker />);
+```
+
+**Class Style:**
+```jsx
+class Clicker extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      clicked: false,
+    };
+  }
+  onClicked() {
+    this.setState({
+      clicked: !this.state.clicked,
+    });
+  }
+  render() {
+    return <p onClick={(e) => this.onClicked(e)}>clicked: {`${this.state.clicked}`}</p>;
+  }
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Clicker />);
+```
+
+
+
+# Week 14
+
+
+## Toolchains:
+ - We have many tools to do common functional parts of applications. Here are some:
+
+- **Code repository** - Stores code in a shared, versioned, location.
+- **Linter** - Removes, or warns, of non-idiomatic code usage.
+- **Prettier** - Formats code according to a shared standard.
+- **Transpiler** - Compiles code into a different format. For example, from JSX to JavaScript, TypeScript to JavaScript, or SCSS to CSS.
+- **Polyfill** - Generates backward compatible code for supporting old browser versions that do not support the latest standards.
+- **Bundler** - Packages code into bundles for delivery to the browser. This enables compatibility (for example with ES6 module support), or performance (with lazy loading).
+- **Minifier** - Removes whitespace and renames variables in order to make code smaller and more efficient to deploy.
+- **Testing** - Automated tests at multiple levels to ensure correctness.
+- **Deployment** - Automated packaging and delivery of code from the development environment to the production environment.
+
+ - We have much Toolchain usage in our project
+
+
+## React Tic-Tac-Toe
+ - Putting `default` in a function tells other files that use this fail that it's the main function of the file
+ - React components can only return a single JSX element. To return multiple we wrap them in fragments `<>` and `</>`
+ - We can put divs and other things. Basically as much HTML as we want, as long as we put it inside our fragments and make sure the return has parenthesees
+ - If you import an entire file you can run the default function by just calling the file name like `<App/>`
+ - We put the props we pass in inside parenthesees and squigles: `function Square({ value }) {}`
+ - Curly braces are how we will access that value in the future too
+ - React DevTools can be used to check the props and state of React components
+ - Instead of asking for info from children, try to use a parent's state to keep track of things
+ - To collect data from multiple children, or to have two child components communicate with each other, declare the shared state in their parent component instead. The parent component can pass that state back down to the children via props. This keeps the child components in sync with each other and with their parent.
+ - JavaScript supports closures - inner functions can access variables and functions in an outer function
+ - Every time we call a function that edits some element, it rerenders that element in the DOM
+ - It's convention to name onSomething and handleSomething functions for events
+ - Immutability in data is important so you can easily redo and you haven't lost the data
+ - We use `map` function to transfer from our JavaScript array into an array of React elements
+ - Every list item needs a key to separate it from its siblings
+ - React uses keys to know which items to update. That way it only updates the changed children when it's running a function in the parent's scope
+ - Keys don't need to be globally unique, just among sibling components
+
+
+## React Reactivity
+ - React monitors a component's state and prop objects, and if/when they change, it calls the component's render function
+ - Didn't really learn too much. Just make sure not to get caught in an infinite rendering loop. Pass down arrow functions!
+
+
+## Hooks:
+ - React hooks are what let function style components do everything class style components can. Still dunno why they don't like class style
+ - New features are added as hooks. That's how they force us into function-style
+ - useState is a hook
+ - `useEffect` hook is for representing lifecycle events. It's called every time the component is rerendered
+ - Just kidding, we control when it's caled by specifying its dependencies
+ - We pass an array of dependencies as a second parameter to the `useEffect` call
+ - If you specify an empty array it'll only be called when the function is first rendered. If you do nothing, it'll be called always.
+
+Example Code!!!
+```jsx
+function UseEffectHookDemo() {
+  const [count, updateCount] = React.useState(0);
+  React.useEffect(() => {
+    console.log('rendered');
+
+    return function cleanup() {
+      console.log('cleanup');
+    };
+  });
+
+  return <div onClick={() => updateCount(count + 1)}>useEffectExample {count}</div>;
+}
+
+ReactDOM.render(<UseEffectHookDemo />, document.getElementById('root'));
+```
+
+```jsx
+function UseEffectHookDemo() {
+  const [count1, updateCount1] = React.useState(0);
+  const [count2, updateCount2] = React.useState(0);
+
+  React.useEffect(() => {
+    console.log(`count1 effect triggered ${count1}`);
+  }, [count1]);
+
+  return (
+    <ol>
+      <li onClick={() => updateCount1(count1 + 1)}>Item 1 - {count1}</li>
+      <li onClick={() => updateCount2(count2 + 1)}>Item 2 - {count2}</li>
+    </ol>
+  );
+}
+
+ReactDOM.render(<UseEffectHookDemo />, document.getElementById('root'));
+```
+
+
+## React Router:
+ - A web framework router lets us have a single-page application, where the browser loads one singular HTML page and the JavaScript then manipulates the DOM to have 'multiple pages'
+ - We're going to use react-router-dom version 6. There are many others but we like this one we decided
+ - A basic implementation of the router consists of a `BrowserRouter` component that encapsulates the entire application and controls the routing action. The `Link`, or `NavLink`, component captures user navigation events and modifies what is rendered by the `Routes` component by matching up the `to` and `path` attributes.
+
+```jsx
+// Inject the router into the application root DOM element
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  // BrowserRouter component that controls what is rendered
+  // NavLink component captures user navigation requests
+  // Routes component defines what component is routed to
+  <BrowserRouter>
+    <div className='app'>
+      <nav>
+        <NavLink to='/'>Home</Link>
+        <NavLink to='/about'>About</Link>
+        <NavLink to='/users'>Users</Link>
+      </nav>
+
+      <main>
+        <Routes>
+          <Route path='/' element={<Home />} exact />
+          <Route path='/about' element={<About />} />
+          <Route path='/users' element={<Users />} />
+          <Route path='*' element={<Navigate to='/' replace />} />
+        </Routes>
+      </main>
+    </div>
+  </BrowserRouter>
+);
+```
+
+
+## Vite:
+ - This is a longer one, but also kinda technically the last one, at least that's required
+ - We want to use the whole web framework toolchain available to us
+ - A Command Line Interface (CLI) is a way to set up your application to use those tools. Makes it so you don't have to configure toolchain parameters yourself
+ - Here are commands to create a new React-based web app using Vite
+```
+npm create vite@latest demoVite -- --template react
+cd demoVite
+npm install
+npm run dev
+```
+
+ - With your default function, you can just declare, export default <FunctionName>
+ - With Vite CLI, we use .jsx for files, not .js
+ - `npm run dev` bundles the code into a temporary directory that the Vite Debug HTTP server loads from
+ - `npm run build` is needed when we're going to deploy to production environment
+ - `npm run build` and `vite build` are the same
+ - `vite build` transpiles, minifies, injects the proper JavaScript, and then outputs everything to a deployment-ready version contained in a distribution subdirectory named `dist`
+ - Our deployment script we've used since React on creates a production distribution and copies that `dist` directory to the production server
+ - The `dist` directory basically has all the files scrunched up into that unreadable mess. Fun looking
+
+
+
+# Week 15
+A real hodgepodge of stuff. Some fun Security and SEO and yeah. I should read these. Will I? Probably
+
+## Security
+ - On your server, you can see all authorization attempts with this command `sudo less +G /var/log/auth.log`. Then you can see all the nasty people trying to break in
+ - If you have a website, people are trying to break into it. ESPECIALLY if there's any sort of username and password. People use the same stuff for everything
+
+Here's some fun vocab to do with security:
+- **Hacking** - The process of making a system do something it's not supposed to do.
+- **Exploit** - Code or input that takes advantage of a programming or configuration flaw.
+- **Attack Vector** - The method that a hacker employs to penetrate and exploit a system.
+- **Attack Surface** - The exposed parts of a system that an attacker can access. For example, open ports (22, 443, 80), service endpoints, or user accounts.
+- **Attack Payload** - The actual code, or data, that a hacker delivers to a system in order to exploit it.
+- **Input sanitization** - "Cleaning" any input of potentially malicious data.
+- **Black box testing** - Testing an application without knowledge of the internals of the application.
+- **White box testing** - Testing an application by **with** knowledge of the source code and internal infrastructure.
+- **Penetration Testing** - Attempting to gain access to, or exploit, a system in ways that are not anticipated by the developers.
+- **Mitigation** - The action taken to remove, or reduce, a threat.
+
+Here are some common hacking techniques:
+- **Injection**: When an application interacts with a database on the backend, a programmer will often take user input and concatenate it directly into a search query. This allows a hacker can use a specially crafted query to make the database reveal hidden information or even delete the database.
+
+- **Cross-Site Scripting (XSS)**: A category of attacks where an attacker can make malicious code execute on a different user's browser. If successful, an attacker can turn a website that a user trusts, into one that can steal passwords and hijack a user's account.
+
+- **Denial of Service**: This includes any attack where the main goal is to render any service inaccessible. This can be done by deleting a database using an SQL injection, by sending unexpected data to a service endpoint that causes the program to crash, or by simply making more requests than a server can handle.
+
+- **Credential Stuffing**: People have a tendency to reuse passwords or variations of passwords on different websites. If a hacker has a user's credentials from a previous website attack, then there is a good chance that they can successfully use those credentials on a different website. A hacker can also try to brute force attack a system by trying every possible combination of password.
+
+- **Social engineering** - Appealing to a human's desire to help, in order to gain unauthorized access or information.
+
+Here are some things to keep in mind to be security-minded when making web apps:
+- **Sanitize input data** - Always assume that any data you receive from outside your system will be used to exploit your system. Consider if the input data can be turned into an executable expression, or can overload computing, bandwidth, or storage resources.
+- **Logging** - It is not possible to think of every way that your system can be exploited, but you can create an immutable log of requests that will expose when a system is being exploited. You can then trigger alerts, and periodically review the logs for unexpected activity.
+- **Traps** - Create what appears to be valuable information and then trigger alarms when the data is accessed.
+- **Educate** - Teach yourself, your users, and everyone you work with, to be security minded. Anyone who has access to your system should understand how to prevent physical, social, and software attacks.
+- **Reduce attack surfaces** - Do not open access anymore than is necessary to properly provide your application. This includes what network ports are open, what account privileges are allowed, where you can access the system from, and what endpoints are available.
+- **Layered security** - Do not assume that one safeguard is enough. Create multiple layers of security that each take different approaches. For example, secure your physical environment, secure your network, secure your server, secure your public network traffic, secure your private network traffic, encrypt your storage, separate your production systems from your development systems, put your payment information in a separate environment from your application environment. Do not allow data from one layer to move to other layers. For example, do not allow an employee to take data out of the production system.
+- **Least required access policy** - Do not give any one user all the credentials necessary to control the entire system. Only give a user what access they need to do the work they are required to do.
+- **Safeguard credentials** - Do not store credentials in accessible locations such as a public GitHub repository or a sticky note taped to a monitor. Automatically rotate credentials in order to limit the impact of an exposure. Only award credentials that are necessary to do a specific task.
+- **Public review** - Do not rely on obscurity to keep your system safe. Assume instead that an attacker knows everything about your system and then make it difficult for anyone to exploit the system. If you can attack your system, then a hacker will be able to also. By soliciting public review and the work of external penetration testers, you will be able to discover and remove potential exploits.
+
+
+
+## OWASP
+ - Open Web Application Security Project
+ - It's a research entity that keeps track of the top ten most important security risks. That's nifty and useful
+
+### Broken Access Control
+ - Improperly enforced permissions on users
+ - Don't make admin pages accessible if you just have the url
+
+### Cryptographic Failures
+ - Sensitive data accessible with no or poor encryption
+ - Don't use weak hashing algorithms
+ - Always use strong encryption
+
+### Injection
+ - Providing user input that is actually a function that will make the app do bad things or give info it shouldn't
+ - Sanitize your input silly
+
+### Insecure Design
+ - This is unique for each web app. Basically when you make something that can be exploited
+ - Don't do that
+
+### Security Misconfiguration
+ - Making configurations that are easy to access
+ - Don't do that either
+
+### Vulnerable and Outdated Components
+ - Especially when using 3rd party stuff, packages go out of date and become vulnerable. You NEED to constantly update or they will be able to attack you :(
+
+### Identification and Authentication Failure
+ - Anything where attackers can impersonate a real user
+ - Allowing unlimited password attempts can be bad
+ - Don't have weak password recovery
+
+### Software and Data Integrity Failure
+ - Attacks that allow external software/data to compromise your app
+ - Can be dangerous to use third-party apps. They could become compromised or they could be owned by malicious peeps
+
+### Security Logging and Monitoring Failures
+ - Attackers try to delete logs that show their presence. Make your logs immutable
+ - Review your logs silly
+
+### Server Side Request Forgery
+ - Causes application to make unintended internal requests to expose data/services
+ - Also bad
+
+
+
+## Security Practice
+The best way to learn about how attacks happen is to attack yourself. Gruyere and Juice Shop are practice security web applications
+
+### Gruyere
+ - [Gruyere](https://google-gruyere.appspot.com) is great. Provides much tutorial and practice
+
+### Juice Shop
+ - [Juice Shop](https://github.com/juice-shop/juice-shop#-owasp-juice-shop) is also great. Made by OWASP
+ - You must run it from your own device. Great cause you have much control
+Here's how to install:
+```
+git clone https://github.com/juice-shop/juice-shop.git --depth 1
+
+cd juice-shop
+
+npm install
+```
+
+Run the application on 3000 with `npm start`
+ - You have to figure out the challenges on your own. So much fun
+ - Start with the DOM XSS tutorial. Good job
+
+
+
+## Typescript
+ - Typescript adds static type checking to JS. That means it checks while you're coding so you don't use the wrong type
+ - You can define the types your variables should be, so if they're put in wrong the system will catch them
+ - You can also use the `interface` keyword when making custom objects to define the type of their variables/objects they have. Kinda like a class
+ - You can define your own types and tell them what the acceptable values are. Like so `type AuthState = 'unknown' | 'authenticated' | 'unauthenticated';`
+ - You can also use unions to let a variable be of multiple types. You tell the system which types are allowed
+ - To use TypeScript when creating a project use the command `npx create-react-app my-app --template typescript` to use that template
+ - To convert an existing application, use the command `npm install --save-dev typescript` to add the package
+ - Use a `tsconfig.json` file to configure how TS will interact with your code
+ - Look up how to use the `tsconfig.json`, but here's an example:
+```js
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build",
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "./src/**/*"
+  ]
+}
+```
+
+
+
+## Performance Monitoring
+ - Slow pages suck. A 1 second delay in loading the page will lead to 11% fewer views, 16% drop in customer satisfaction, and 7% loss in conversations
+ - Main things to monitor are: browser latency, network latency, and service endpoint latency
+
+### Browser Application Latency
+ - Impacted by amount of data to be processed, user's device, and complexity of processing algorithm
+ - Try to make the application processing as asynchronous as possible so the user doesn't notice/have to wait
+ - Ways to make smaller files:
+    - Use compression when transferring over HTTP
+    - Reduce quality of images and videos
+    - Minify JavaScript and CSS (removes whitespace and shortens variable names)
+    - Use HTTP/2 or HTTP/3
+  
+### Network Latency
+ - Impacted by every network request you make, amount of data sent, amount of data user can receive every second, and distance data has to travel
+ - Bandwith - amount of data a user can receive every second. Not the bandwith!!
+ - You have to be mindful that users have low-bandwith devices
+ - Try to host servers close to where users will be accessing them (geographically)
+
+### Service Endpoint Latency
+ - Impacted by number of requests made and amount of time needed for each request
+ - Goal is under 10ms for every endpoint
+
+### Performance Tools
+ - Browser tools can be used to see the network requests and the time they take. Clear the cache before testing
+ - You can simulate users in network tools as well by throttling (in the network section) to simulate 3G
+ - Chrome debugging Lighthouse tool will analyze your application and show you how good your performance is
+ - Chrome debugger's performance tab is another tool
+ - Global Speed Tests are likewise important to see if it'll run well around the world
+ - If your users are very far away, use a Content Delivery Network (CDN) with a closer location. Yay magic
+
+
+## Search Engine Optimization
+ - SEO can save millions in marketing. Be weird if Kyle spent that
+ - Let's look at some contributors to your search rank:
+
+### Content
+ - SEs care about value you provide. Give content
+
+### Authoritative Links
+ - If other places, especially authoritative places, link your content, that's good
+
+### Structure and Organization
+ - HTML needs to be used properly. The bot should find what it expects to find in different tags
+ - Title and Header elements should contain those keywords you want it to find
+
+### Metadata
+ - Search crawlers target a few key elements attributes. Examples are `description` `robots` `og` and image alt
+ - `og` metatags are used by social media website. Crawlers will think your site is cool and hip if you use them too. Swagalicious
+ - A sitemap is a textfile to describe the major components of your app. Useful if it's huge
+ - `robots.txt` tells the crawler which parts of the application are off-limits
+
+Here're some examples:
+```html
+<meta name="description" content="Game play, news, rankings, tips, and instruction for Simon." />
+```
+```html
+<meta property="og:title" content="Play Simon online" />
+<meta property="og:description" content="News, rankings, instruction, and competitive online play for Simon." />
+<meta property="og:image" content="https://simon.cs260.click/simon.png" />
+```
+```yaml
+# cs260.com/robots.txt
+# Tell Google not to crawl the game play path,
+# because it won't be useful in Google Search results.
+User-agent: googlebot
+Disallow: /play/
+```
+
+### Performance and Usability
+ - Google cares about speed and usability across devices
+
+### Tools
+ - To see how much of your application is being indexed, query google with `site:<domainname>`. That will show if it's displaying any of your pages
+ - PageSpeed Insights can help show you how well you're doing in terms of speed, reliability, and SEO
+ - Google Search Console will tell you how your application is indexed and why
+ - To use Google Search Console, add a DNS `TXT` record on AWS Route 53
+
+
+## Device APIs
+ - Browsers use APIs as features to interact with users. That's how we get location and much other stuff
+ - Most devices require users to accept to your application using that API
+ - Location API can be used like this:
+```jsx
+import React from 'react';
+
+export function Location() {
+  const [position, updatePosition] = React.useState({ lat: 0, long: 0 });
+
+  React.useEffect(() => {
+    console.log('updating pos');
+    navigator.geolocation.getCurrentPosition((p) => {
+      updatePosition({ lat: p.coords.latitude, long: p.coords.longitude });
+    });
+  }, []);
+
+  return (
+    <div>
+      {position.lat !== 0 && (
+        <div>
+          <h1>Your location</h1>
+          <div>Latitude: {position.lat}</div>
+          <div>Longitude: {position.long}</div>
+          <div>
+            <iframe
+              title='map'
+              width='600'
+              height='300'
+              src={`https://www.openstreetmap.org/export/embed.html?bbox=${position.long + 0.001},${
+                position.lat + 0.001
+              },${position.long - 0.001},${position.lat - 0.001}&amp;layer=mapnik`}
+            ></iframe>
+          </div>
+        </div>
+      )}
+      {position.lat === 0 && <div>Location unknown</div>}
+    </div>
+  );
+}
+```
+
+ - Notification API can be useful too. Let's look at that:
+```jsx
+function Notifier() {
+  const [acceptanceState, updateAcceptanceState] = React.useState(Notification.permission);
+  const [msg, updateMsg] = React.useState('');
+
+  function register() {
+    Notification.requestPermission().then((response) => {
+      updateAcceptanceState(response);
+    });
+  }
+
+  function notify() {
+    new Notification('You are notified', {
+      body: msg,
+    });
+    updateMsg('');
+  }
+
+  return (
+    <div className='component'>
+      <p>User's acceptance of notifications: {acceptanceState}</p>
+      {acceptanceState === 'default' && <button onClick={() => register()}>Register</button>}
+      {acceptanceState === 'granted' && (
+        <div>
+          <input type='text' value={msg} onChange={(e) => updateMsg(e.target.value)} placeholder='msg here'></input>
+          <button disabled={msg === ''} onClick={() => notify()}>
+            Notify
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+ - Some other fun APIs are Contact Picker, Bluetooth, and File System
+
+
+## Progressive Web Application
+ - I don't need to know this, but let's learn it anyway
+ - We want to have applications that run on everything. Phones, computers, watches
+ - Device native applications were the norm for a while, because money, but then they realized we should make universal web apps, called PWA
+ - Mobile devices are 60% of internet traffic
+ - Many advantages. Uniformity, not worrying about app store, no internet needed
+ - Sometimes you still need a Native application. Mainly Apple incompatibility. They're still holding on to some functionality
+ - PWA makes it so desktop can have a Native app experience. Very nice, I like
+
+### How to make PWA
+ - If you already have responsive design and fallback offline functionality, all you need to add is a manifest to define details for displaying your app and write some JS to implement the service worker API to cache files
+
+#### Manifest
+ - Your `manifest.json` file is included in `index.html`
+ - Manifest includes settings like how to display it, scope, icons, colors, descriptions, and installation screenshots
+Example:
+```json
+{
+  "short_name": "Simon",
+  "name": "Simon",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/maskable_icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
+```
+
+#### Service Workers
+ - Service Workers allow a web application to do background processing not directly associated with rendering and interaction
+ - To register a SW, we call the API with the url to a JS file with your code: `navigator.serviceWorker.register('service-worker.js');`
+ - You can see the SW's state on dev tools in the `Application` tab
+ - Workbox is an NPM package made by Google for using service workers
+
+
+
+
+
+
+
+
+
+
+
+

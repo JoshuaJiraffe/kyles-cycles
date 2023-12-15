@@ -125,3 +125,22 @@ For this deliverable I added user login/authentication and tied that to their ap
 - **Existing user** - If the user already exists it logs them in and gives them their delicious authentication cookie
 - **Use MongoDB to store credentials** - Stores both username and password.
 - **Restricts functionality** - You cannot schedule an appointment until you have logged in.
+
+
+## WebSocket Deliverable
+For this deliverable I used websocket to update views of the bikes in realtime.
+
+- **Backend listens for WebSocket connection** - done!
+- **Frontend makes WebSocket connection** - done!
+- **Data sent over WebSocket connection** - done!
+- **WebSocket data displayed** - All motoryclce views update whenever someone goes to the page. Yay
+
+
+## React deliverable
+
+For this deliverable I converted the application over to use React
+
+- **Bundled and transpiled** - done!
+- **Components** - Login, motorcycle list, motorcycle card, scheduler, motorcycle details are all components.
+- **Router** - Routing between motorcycle list and motorcycle detail components
+- **Hooks** - I used hooks to handle form submission and motorcycle detail data
